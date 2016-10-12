@@ -1,0 +1,22 @@
+﻿Imports System
+Imports System.Text
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim sb As StringBuilder = New StringBuilder()
+
+        sb.Append("StringBuilder ").Append("is ").Append("very . . . ")
+
+        Dim built1 As String = sb.ToString()
+
+        sb.Append("cool")
+
+        Dim built2 As String = sb.ToString()
+
+        Console.WriteLine(built1)
+        Console.WriteLine(built2)
+    End Sub
+End Class
+
+------------------------------------------------------------
+

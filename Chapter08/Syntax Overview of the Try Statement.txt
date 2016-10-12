@@ -1,0 +1,36 @@
+Imports System
+Imports System.Collections
+Imports System.Runtime.CompilerServices
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Try
+            Dim list As ArrayList = New ArrayList()
+
+            list.Add(1)
+            Console.WriteLine("Item 10 = {0}", list(10))
+        Catch x As ArgumentOutOfRangeException
+            Console.WriteLine("=== ArgumentOutOfRangeException Handler ===")
+            Console.WriteLine(x)
+            Console.WriteLine("=== ArgumentOutOfRangeException Handler ===")
+        Catch x As Exception
+            Console.WriteLine("=== Exception Handler ===")
+            Console.WriteLine(x)
+            Console.WriteLine("=== Exception Handler ===")
+        Finally
+            Console.WriteLine(vbCrLf & "Cleaning up...")
+        End Try
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Public Class MyCollection
+    Private Count As Integer
+
+    Public Function GetItem(ByVal index As Integer) As Object
+        If index < 0 OrElse index >= Count Then
+            Throw New ArgumentOutOfRangeException()
+        End If
+    End Function
+End Class

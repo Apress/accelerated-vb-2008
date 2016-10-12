@@ -1,0 +1,43 @@
+Public Sub SomeMethod(ByVal col As ArrayList)
+    For Each o As Object In col
+        Dim iface As ISomeInterface = CType(o, ISomeInterface)
+
+        iface.DoSomething()
+    Next o
+End Sub
+
+------------------------------------------------------------
+
+Public Sub SomeMethod(ByVal col As IList(Of ISomeInterface))
+    For Each iface As ISomeInterface In col
+        iface.DoSomething()
+    Next iface
+End Sub
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Collections
+Imports System.Collections.Generic
+
+Public Class EntryPoint
+    Shared Sub Main()
+    End Sub
+
+    Public Sub NonGeneric(ByVal stack As Stack)
+        For Each o As Object In stack
+            Dim number As Integer = CInt(Fix(o))
+
+            Console.WriteLine(number)
+        Next o
+    End Sub
+
+    Public Sub Generic(ByVal stack As Stack(Of Integer))
+        For Each number As Integer In stack
+            Console.WriteLine(number)
+        Next number
+    End Sub
+End Class
+
+------------------------------------------------------------
+

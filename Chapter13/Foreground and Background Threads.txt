@@ -1,0 +1,21 @@
+Imports System
+Imports System.Threading
+
+Public Class EntryPoint
+    Private Shared Sub ThreadFunc1()
+        Thread.Sleep(5000)
+      Console.WriteLine("Exiting extra thread at " & Now() & ".")
+    End Sub
+
+    Shared Sub Main()
+        Dim thread1 As Thread = _
+            New Thread(AddressOf EntryPoint.ThreadFunc1)
+
+        thread1.Start()
+
+      Console.WriteLine("Exiting main thread at " & Now() & ".")
+    End Sub
+End Class
+
+------------------------------------------------------------
+

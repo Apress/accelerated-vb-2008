@@ -1,0 +1,24 @@
+Imports System
+Imports System.Collections
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Try
+            Try
+                Dim list As ArrayList = New ArrayList()
+                list.Add(1)
+                Console.WriteLine("Item 10 = {0}", list(10))
+
+            Finally
+                Console.WriteLine("Cleaning up...")
+                Throw New Exception("I like to throw")
+            End Try
+
+        Catch generatedExceptionName As ArgumentOutOfRangeException
+            Console.WriteLine("Oops!  Argument out of range!")
+
+        Catch
+            Console.WriteLine("Done")
+        End Try
+    End Sub
+End Class

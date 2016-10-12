@@ -1,0 +1,106 @@
+Imports System
+Imports System.Threading
+
+Public Class EntryPoint
+    'Declare the delegate for the async call.
+    Private Delegate Function ComputeTaxesDelegate( _
+        ByVal year As Integer) _
+        As Decimal
+
+    'The method that computes the taxes.
+    Private Shared Function ComputeTaxes(ByVal year As Integer) _
+        As Decimal
+        Console.WriteLine("Computing taxes in thread {0}", _
+            Thread.CurrentThread.GetHashCode())
+
+        'Here's where the long calculation happens.
+        Thread.Sleep(6000)
+
+        'Return the "Amount Owed"
+        Return 4356.98D
+    End Function
+
+    Shared Sub Main()
+        'Let's make the asynchronous call by creating the delegate and
+        'calling it.
+        Dim work As ComputeTaxesDelegate = _
+            New ComputeTaxesDelegate( _
+                AddressOf EntryPoint.ComputeTaxes)
+
+        Dim pendingOp As IAsyncResult = _
+            work.BeginInvoke(2004, Nothing, Nothing)
+
+        'Do some other useful work.
+        Thread.Sleep(3000)
+
+        'Finish the async call.
+        Console.WriteLine("Waiting for operation to complete.")
+        Dim result As Decimal = work.EndInvoke(pendingOp)
+        Console.WriteLine("Taxes owed: {0}", result)
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Public Interface IAsyncResult
+  ReadOnly Property AsyncState() As Object
+  ReadOnly Property AsyncWaitHandle() As WaitHandle
+  ReadOnly Property CompletedSynchronously() As Boolean
+  ReadOnly Property IsCompleted() As Boolean
+End Interface
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Threading
+
+Public Class EntryPoint
+    'Declare the delegate for the async call.
+    Private Delegate Function ComputeTaxesDelegate( _
+        ByVal year As Integer) _
+        As Decimal
+
+    'The method that computes the taxes.
+    Private Shared Function ComputeTaxes(ByVal year As Integer) _
+        As Decimal
+        Console.WriteLine("Computing taxes in thread {0}", _
+            Thread.CurrentThread.GetHashCode())
+
+        'Here's where the long calculation happens.
+        Thread.Sleep(6000)
+
+        'Return the "Amount Owed"
+        Return 4356.98D
+    End Function
+
+    Private Shared Sub TaxesComputed(ByVal ar As IAsyncResult)
+        'Let's get the results now.
+        Dim work As ComputeTaxesDelegate = _
+            CType(ar.AsyncState, ComputeTaxesDelegate)
+
+        Dim result As Decimal = work.EndInvoke(ar)
+        Console.WriteLine("Taxes owed: {0}", result)
+    End Sub
+
+    Shared Sub Main()
+        'Let's make the asynchronous call by creating the delegate and
+        'calling it.
+        Dim work As ComputeTaxesDelegate = _
+            New ComputeTaxesDelegate( _
+                AddressOf EntryPoint.ComputeTaxes)
+
+        work.BeginInvoke(2004, _
+            New AsyncCallback(AddressOf EntryPoint.TaxesComputed), _
+                work)
+
+        'Do some other useful work.
+        Thread.Sleep(3000)
+
+        'Finish the async call.
+        Console.WriteLine("Waiting for operation to complete.")
+        Thread.Sleep(4000)
+    End Sub
+End Class
+
+------------------------------------------------------------
+

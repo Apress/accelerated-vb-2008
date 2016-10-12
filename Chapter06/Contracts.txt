@@ -1,0 +1,65 @@
+Imports System.Collections.ObjectModel
+
+Namespace CityOfShanoo.MyZoo
+    Public Structure Point
+        Public x As Double
+        Public y As Double
+    End Structure
+
+    Public MustInherit Class ZooDweller
+        Sub EatSomeFood()
+            EatTheFood()
+        End Sub
+
+        Protected MustOverride Sub EatTheFood()
+    End Class
+
+    Public NotInheritable Class ZooKeeper
+        Public Sub SendFlyCommand(ByVal dest As Point)
+            'Get creatures to fly
+        End Sub
+    End Class
+
+    Public NotInheritable Class Zoo
+        Private Shared instance As Zoo = New Zoo()
+        Private keeper As ZooKeeper
+        Private creatures As Collection(Of ZooDweller)
+
+        Private Sub New()
+            creatures = New Collection(Of ZooDweller)()
+            keeper = New ZooKeeper()
+        End Sub
+
+        Public Shared ReadOnly Property TheZoo() As Zoo
+            Get
+                Return instance
+            End Get
+        End Property
+
+        Public ReadOnly Property TheKeeper() As ZooKeeper
+            Get
+                Return keeper
+            End Get
+        End Property
+    End Class
+End Namespace
+
+------------------------------------------------------------
+
+   Public Interface IFly
+      Sub FlyTo(ByVal dest As Point)
+   End Interface
+
+   Public Class Bird
+      Inherits ZooDweller
+      Implements IFly
+
+      Protected Overrides Sub EatTheFood()
+        Console.WriteLine( "Eating some food." )
+      End Sub
+
+      Public Sub Fly(ByVal dest As Point) Implements IFly.FlyTo
+         Console.WriteLine( _
+            "Flying to ({0}. {1}).", dest)
+      End Sub
+   End Class

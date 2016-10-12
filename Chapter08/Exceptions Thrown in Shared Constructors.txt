@@ -1,0 +1,25 @@
+Imports System
+Imports System.IO
+
+Class EventLogger
+    Private Shared EventLog As StreamWriter
+    Private Shared StrLogName As String
+
+    Shared Sub New()
+        EventLog = File.CreateText("logfile.txt")
+        StrLogName = DirectCast(StrLogName.Clone(), String)
+    End Sub
+
+    Public Shared Sub WriteLog(ByVal someText As String)
+        EventLog.Write(someText)
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        EventLogger.WriteLog("Log this!")
+    End Sub
+End Class
+
+------------------------------------------------------------
+

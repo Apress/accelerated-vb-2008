@@ -1,0 +1,20 @@
+Imports System
+Imports System.Globalization
+Imports System.Windows.Forms
+
+Public Class EntryPoint
+    Shared Sub Main(ByVal args As String())
+        If args.Length < 3 Then
+            Console.WriteLine("Please provide 3 parameters")
+            Return
+        End If
+
+        Dim composite As String = _
+            String.Format("{0}, {1}, and {2}.", args(0), args(1), args(2))
+
+        Console.WriteLine(composite)
+    End Sub
+End Class
+
+------------------------------------------------------------
+

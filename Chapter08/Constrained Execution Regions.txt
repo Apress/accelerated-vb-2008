@@ -1,0 +1,48 @@
+Imports System.Collections
+Imports System.Runtime.CompilerServices
+Imports System.Runtime.ConstrainedExecution
+
+Class Employee
+End Class
+
+Class EmployeeDatabase
+    Private ActiveEmployees As ArrayList
+    Private TerminatedEmployees As ArrayList
+
+    Public Sub TerminateEmployee(ByVal index As Integer)
+        'Clone-sensitive objects
+        Dim tempActiveEmployees As ArrayList = _
+            DirectCast(ActiveEmployees.Clone(), ArrayList)
+        Dim tempTerminatedEmployees As ArrayList = _
+            DirectCast(TerminatedEmployees.Clone(), ArrayList)
+
+        'Perform actions on temp objects.
+        Dim employee As Object = tempActiveEmployees(index)
+        tempActiveEmployees.RemoveAt(index)
+        tempTerminatedEmployees.Add(employee)
+
+        RuntimeHelpers.PrepareConstrainedRegions()
+
+        Try
+
+        Finally
+            'Now commit the changes
+            Dim tempSpace As ArrayList = Nothing
+
+            ListSwap(ActiveEmployees, tempActiveEmployees, tempSpace)
+            ListSwap(TerminatedEmployees, tempTerminatedEmployees, tempSpace)
+        End Try
+    End Sub
+
+    <ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)> _
+    Sub ListSwap(ByRef first As ArrayList, ByRef second As ArrayList, _
+        ByRef temp As ArrayList)
+        temp = first
+        first = second
+        second = temp
+        temp = Nothing
+    End Sub
+End Class
+
+------------------------------------------------------------
+

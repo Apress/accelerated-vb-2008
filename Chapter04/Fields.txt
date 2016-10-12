@@ -1,0 +1,70 @@
+Public Class A
+    Private ReadOnly x As Integer = 123
+    Private ReadOnly y As Integer
+    Public Const z As Integer = 555
+
+    Public Sub New()
+        Me.y = 456
+        'We can set y again.
+        Me.y = 654
+
+        'Here, we use y as a ByRef parameter.
+        SetField(Me.y)
+    End Sub
+
+    Private Sub SetField(ByRef val As Integer)
+        val = 888
+    End Sub
+
+    Shared Sub Main()
+        Dim obj As A = New A()
+
+        System.Console.WriteLine("x = {0}, y = {1}, z = {2}", obj.x, obj.y, A.z)
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Private x As Integer = 789
+Private y As Integer
+Private z As Integer = A.InitZ()
+
+------------------------------------------------------------
+
+Imports System
+
+Public Class A
+    Private y As Integer = InitY()
+    Private x As Integer = InitX()
+    Private Shared a As Integer = InitA()
+    Private Shared b As Integer = InitB()
+
+    Private Shared Function InitX() As Integer
+        Console.WriteLine("A.InitX()")
+        Return 1
+    End Function
+
+    Private Shared Function InitY() As Integer
+        Console.WriteLine("A.InitY()")
+        Return 2
+    End Function
+
+    Private Shared Function InitA() As Integer
+        Console.WriteLine("A.InitA()")
+        Return 3
+    End Function
+
+    Private Shared Function InitB() As Integer
+        Console.WriteLine("A.InitB()")
+        Return 4
+    End Function
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim objA As A = New A
+    End Sub
+End Class
+
+------------------------------------------------------------
+

@@ -1,0 +1,171 @@
+Imports System
+
+'Arguments passed from UI when play event occurs.
+Public Class PlayEventArgs
+    Inherits EventArgs
+
+    Private mFilename As String
+
+    Public Sub New(ByVal filename As String)
+        Me.mFilename = filename
+    End Sub
+
+    Public ReadOnly Property Filename() As String
+        Get
+            Return mFilename
+        End Get
+    End Property
+End Class
+
+Public Class PlayerUI
+    'Define event for play notifications.
+    Public Event PlayEvent As EventHandler(Of PlayEventArgs)
+
+    Public Sub UserPressedPlay()
+        OnPlay()
+    End Sub
+
+    Protected Overridable Sub OnPlay()
+        'Fire the event.
+        Dim localHandler As EventHandler(Of PlayEventArgs) = PlayEventEvent
+
+        If Not localHandler Is Nothing Then
+            localHandler(Me, New PlayEventArgs("song.wav"))
+        End If
+    End Sub
+End Class
+
+Public Class CorePlayer
+    Private ui As PlayerUI
+
+    Public Sub New()
+        ui = New PlayerUI()
+
+        'Register our event handler.
+        AddHandler ui.PlayEvent, AddressOf PlaySomething
+    End Sub
+
+    Private Sub PlaySomething(ByVal source As Object, ByVal args As PlayEventArgs)
+        'Play the file.
+    End Sub
+
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim player As CorePlayer = New CorePlayer()
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Public Class PlayerUI
+    'Define event for play notifications.
+    Private PlayEventEvent As EventHandler(Of PlayEventArgs)
+
+    Public Custom Event PlayEvent As EventHandler(Of PlayEventArgs)
+        AddHandler(ByVal value As EventHandler(Of PlayEventArgs))
+            PlayEventEvent = _
+                CType(System.Delegate.Combine(PlayEventEvent, value), _
+                EventHandler(Of PlayEventArgs))
+        End AddHandler
+
+        RemoveHandler(ByVal value As EventHandler(Of PlayEventArgs))
+            PlayEventEvent = _
+                CType(System.Delegate.Remove(PlayEventEvent, value), _
+                EventHandler(Of PlayEventArgs))
+        End RemoveHandler
+
+        RaiseEvent(ByVal sender As Object, ByVal e As PlayEventArgs)
+            If Not sender Is Nothing Then
+                'Add event code here.
+            End If
+        End RaiseEvent
+
+    End Event
+
+    Public Sub UserPressedPlay()
+        OnPlay()
+    End Sub
+
+    Protected Overridable Sub OnPlay()
+        'Fire the event.
+        Dim localHandler As EventHandler(Of PlayEventArgs) = PlayEventEvent
+
+        If Not localHandler Is Nothing Then
+            localHandler(Me, New PlayEventArgs("song.wav"))
+        End If
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Drawing
+Imports System.Windows.Forms
+
+Public Class Form1
+    Inherits Form
+
+    Private Window1 As New Form
+    Private Label1 As New Label
+
+    Private Button1 As New Button
+    Private Button2 As New Button
+    Private Button3 As New Button
+
+    Public Sub New()
+        Me.Size = New Size(350, 150)
+        Me.Text = "Event Handlers"
+
+        Label1.Location = New Point(10, 15)
+        Label1.Size = New Size(320, 50)
+        Label1.TextAlign = ContentAlignment.MiddleCenter
+        Label1.BorderStyle = BorderStyle.Fixed3D
+        Label1.Text = "Press buttons below to fire each event handler."
+
+        Button1.Location = New Point(15, 75)
+        Button1.Size = New Size(110, 25)
+        Button1.Text = "Object / EventArgs"
+        Button2.Location = New Point(130, 75)
+        Button2.Size = New Size(100, 25)
+        Button2.Text = "Object / Object"
+        Button3.Location = New Point(235, 75)
+        Button3.Size = New Size(90, 25)
+        Button3.Text = "No parameters"
+
+        Me.Controls.Add(Label1)
+        Me.Controls.Add(Button1)
+        Me.Controls.Add(Button2)
+        Me.Controls.Add(Button3)
+
+        AddHandler Button1.Click, AddressOf Button1_Click
+        AddHandler Button2.Click, AddressOf Button2_Click
+        AddHandler Button3.Click, AddressOf Button3_Click
+    End Sub
+
+    Private Sub Button1_Click(ByVal sender As Object, ByVal e As EventArgs)
+        Label1.Text = "The pre-VB 2005" + vbCrLf + _
+            "(ByVal sender as Object, ByVal e As EventArgs) version."
+    End Sub
+
+    Private Sub Button2_Click(ByVal sender As Object, ByVal e As Object)
+        Label1.Text = "The VB 2005 subtype" + vbCrLf + _
+            "(ByVal sender as Object, ByVal e As Object) version."
+    End Sub
+
+    Private Sub Button3_Click()
+        Label1.Text = "The parameterless, fully relaxed version in VB 2008."
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim SampleWin As Form1 = New Form1
+
+        SampleWin.ShowDialog()
+    End Sub
+End Class
+
+------------------------------------------------------------
+

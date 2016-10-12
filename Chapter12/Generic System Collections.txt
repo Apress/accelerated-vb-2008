@@ -1,0 +1,20 @@
+Imports System
+Imports System.Collections.Generic
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim list1 As SortedList(Of Integer, String) = _
+            New SortedList(Of Integer, String)()
+
+        Dim list2 As SortedList(Of Integer, String) = _
+            New SortedList(Of Integer, String)(Comparer(Of Integer).Default)
+
+        list1.Add(1, "one")
+        list1.Add(2, "two")
+        list2.Add(3, "three")
+        list2.Add(4, "four")
+    End Sub
+End Class
+
+------------------------------------------------------------
+

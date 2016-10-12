@@ -1,0 +1,127 @@
+Imports System
+Imports System.Threading
+
+Public Class EntryPoint
+    Private Shared theLock As Object = New Object()
+    Private Shared numberThreads As Integer = 0
+    Private Shared rnd As Random = New Random()
+
+    Private Shared Sub RndThreadFunc()
+        'Manage thread count and wait for a random amount of time 
+        'between(1 and 12) seconds.
+        Try
+            Monitor.Enter(theLock)
+            numberThreads += 1
+        Finally
+            Monitor.Exit(theLock)
+        End Try
+
+        Dim time As Integer = rnd.Next(1000, 12000)
+
+        Thread.Sleep(time)
+
+        Try
+            Monitor.Enter(theLock)
+            numberThreads -= 1
+        Finally
+            Monitor.Exit(theLock)
+        End Try
+    End Sub
+
+    Private Shared Sub RptThreadFunc()
+        Do While True
+            Dim threadCount As Integer = 0
+
+            Try
+                Monitor.Enter(theLock)
+                threadCount = numberThreads
+            Finally
+                Monitor.Exit(theLock)
+            End Try
+
+            Console.WriteLine("{0} thread(s) alive", threadCount)
+
+            Thread.Sleep(1000)
+        Loop
+    End Sub
+
+    Shared Sub Main()
+        'Start the reporting threads.
+        Dim reporter As Thread = _
+            New Thread(AddressOf EntryPoint.RptThreadFunc)
+
+        reporter.IsBackground = True
+        reporter.Start()
+
+        'Start the threads that wait random time.
+        Dim rndthreads As Thread() = New Thread(49) {}
+
+        For i As UInteger = 0 To 49
+            rndthreads(i) = _
+                New Thread(AddressOf EntryPoint.RndThreadFunc)
+            rndthreads(i).Start()
+        Next i
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Threading
+
+Public Class EntryPoint
+    Private Shared theLock As Object = New Object()
+    Private Shared numberThreads As Integer = 0
+    Private Shared rnd As Random = New Random()
+
+    Private Shared Sub RndThreadFunc()
+        'Manage thread count and wait for a random amount of time 
+        'between(1 and 12) seconds.
+        SyncLock theLock
+            numberThreads += 1
+        End SyncLock
+
+        Dim time As Integer = rnd.Next(1000, 12000)
+
+        Thread.Sleep(time)
+
+        SyncLock theLock
+            numberThreads -= 1
+        End SyncLock
+    End Sub
+
+    Private Shared Sub RptThreadFunc()
+        Do While True
+            Dim threadCount As Integer = 0
+
+            SyncLock theLock
+                threadCount = numberThreads
+            End SyncLock
+
+            Console.WriteLine("{0} thread(s) alive", threadCount)
+
+            Thread.Sleep(1000)
+        Loop
+    End Sub
+
+    Shared Sub Main()
+        'Start the reporting threads.
+        Dim reporter As Thread = _
+            New Thread(AddressOf EntryPoint.RptThreadFunc)
+
+        reporter.IsBackground = True
+        reporter.Start()
+
+        'Start the threads that wait random time.
+        Dim rndthreads As Thread() = New Thread(49) {}
+
+        For i As UInteger = 0 To 49
+            rndthreads(i) = _
+                New Thread(AddressOf EntryPoint.RndThreadFunc)
+            rndthreads(i).Start()
+        Next i
+    End Sub
+End Class
+
+------------------------------------------------------------
+

@@ -1,0 +1,51 @@
+Imports System
+Imports System.Collections.ObjectModel
+
+Public Class MyContainer(Of T)
+   Inherits Collection(Of T)
+
+   Private impl As List(Of T) = New List(Of T)()
+
+   Public Overloads Sub Add(Of R)(ByVal otherContainer As MyContainer(Of R), _
+       ByVal converter As Converter(Of R, T))
+
+      For Each item As R In otherContainer
+         MyBase.Add(converter(item))
+      Next item
+   End Sub
+End Class
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim lContainer As MyContainer(Of Long) = New MyContainer(Of Long)()
+      Dim iContainer As MyContainer(Of Integer) = New MyContainer(Of Integer)()
+
+      'Add 2 items to long container
+      lContainer.Add(1)
+      lContainer.Add(2)
+
+      'Add 2 items to integer container
+      iContainer.Add(3)
+      iContainer.Add(4)
+
+      'Convert and append integer container to long container
+      lContainer.Add(iContainer, AddressOf EntryPoint.IntToLongConverter)
+
+      For Each i As Integer In iContainer
+         Console.WriteLine("iContainer Item: {0}", i)
+      Next i
+
+      Console.WriteLine()
+
+      For Each l As Long In lContainer
+         Console.WriteLine("lContainer Item: {0}", l)
+      Next l
+   End Sub
+
+   Private Shared Function IntToLongConverter(ByVal i As Integer) As Long
+      Return i
+   End Function
+End Class
+
+------------------------------------------------------------
+

@@ -1,0 +1,38 @@
+Imports System
+
+Public Class Person
+    Protected Overrides Sub Finalize()
+        Try
+            Console.WriteLine("Cleaning up Person...")
+            Console.WriteLine("Done Cleaning up Person...")
+        Finally
+            MyBase.Finalize()
+        End Try
+    End Sub
+End Class
+
+Public Class Employee
+    Inherits Person
+
+    Protected Overrides Sub Finalize()
+        Try
+            Console.WriteLine("Cleaning up Employee...")
+
+            Dim obj As Object = Nothing
+
+            Console.WriteLine(obj.ToString())
+            Console.WriteLine("Done cleaning up Employee...")
+        Finally
+            MyBase.Finalize()
+        End Try
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim e As Employee = New Employee
+    End Sub
+End Class
+
+------------------------------------------------------------
+

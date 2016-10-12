@@ -1,0 +1,57 @@
+Public Interface IFormattable
+    Function ToString(ByVal format As String, _
+        ByVal formatProvider As IFormatProvider) As String
+End Interface
+
+Public Interface IFormatProvider
+    Function GetFormat(ByVal formatType As Type) As Object
+End Interface
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Globalization
+
+Public NotInheritable Class ComplexNumber
+    Implements IFormattable
+
+    Private ReadOnly real As Double
+    Private ReadOnly imaginary As Double
+
+    'Other methods removed for clarity.
+
+    Public Sub New(ByVal real As Double, ByVal imaginary As Double)
+        Me.real = real
+        Me.imaginary = imaginary
+    End Sub
+
+    Public Overrides Function ToString() As String
+        Return ToString("G", Nothing)
+    End Function
+
+    'IFormattable implementation
+    Public Overloads Function ToString(ByVal format As String, _
+        ByVal formatProvider As IFormatProvider) As String _
+        Implements IFormattable.ToString
+
+        Dim result As String = "(" & real.ToString(format, formatProvider) & _
+            " " & real.ToString(format, formatProvider) & ")"
+
+        Return result
+    End Function
+End Class
+
+Public NotInheritable Class EntryPoint
+    Shared Sub Main()
+        Dim num1 As ComplexNumber = New ComplexNumber(1.12345678, 2.12345678)
+
+        Console.WriteLine("US format: {0}", num1.ToString("F5", _
+            New CultureInfo("en-US")))
+        Console.WriteLine("DE format: {0}", num1.ToString("F5", _
+            New CultureInfo("de-DE")))
+        Console.WriteLine("Object.ToString(): {0}", num1.ToString())
+    End Sub
+End Class
+
+------------------------------------------------------------
+

@@ -1,0 +1,13 @@
+Imports System.Xml.Linq
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim Musicians_XML As New XDocument(New XDeclaration("1.0", "UTF-8", "yes"), _
+         New XElement("Musicians", _
+         New XComment("This level will hold all our musicians.")))
+
+      Dim SW As New System.IO.StringWriter()
+      Musicians_XML.Save(SW)
+      Console.WriteLine(SW)
+   End Sub
+End Class

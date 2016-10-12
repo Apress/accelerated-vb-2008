@@ -1,0 +1,39 @@
+Imports System
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim twoDim1(,) As Integer = New Integer(5, 3) {}
+        Dim twoDim2(,) As Integer = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
+
+        For Each i As Integer In twoDim2
+            Console.WriteLine(i)
+        Next
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim twoDim As Integer(,) = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
+
+        For i As Integer = 0 To twoDim.GetLength(0) - 1
+            For j As Integer = 0 To twoDim.GetLength(1) - 1
+                Console.WriteLine(twoDim(i, j))
+            Next
+        Next
+
+        Console.WriteLine(vbCrLf)
+
+        For i As Integer = twoDim.GetLowerBound(0) To twoDim.GetUpperBound(0)
+            For j As Integer = twoDim.GetLowerBound(1) To twoDim.GetUpperBound(1)
+                Console.WriteLine(twoDim(i, j))
+            Next
+        Next
+    End Sub
+End Class
+
+------------------------------------------------------------
+

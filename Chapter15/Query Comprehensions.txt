@@ -1,0 +1,41 @@
+Dim SmallCapStocks = From Stock In AllStocks _
+    Where Stock.Price < 10.0 _
+    Select Stock.Ticker, Stock.Price
+
+------------------------------------------------------------
+
+From E in Employees
+
+------------------------------------------------------------
+
+From E In Employees
+Select E.FirstName, E.LastName
+
+------------------------------------------------------------
+
+From E In Employees 
+Select E.Department 
+Distinct
+
+------------------------------------------------------------
+
+From E In Employees
+Where E.Department = “Warehouse”
+Select E.FirstName, E.LastName
+
+------------------------------------------------------------
+
+From E In Employees
+Where E.Department = “Warehouse”
+Order By E.HireDate Descending
+Select E.FirstName, E.LastName
+
+------------------------------------------------------------
+
+From E In Employees
+Join L In Locations On E.LocationID Equals L.ID
+Where L.DepartmentType = “Warehouse”
+Select E.FirstName, E.LastName, L.City, L.State
+
+------------------------------------------------------------
+

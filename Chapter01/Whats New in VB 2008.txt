@@ -1,0 +1,131 @@
+Dim SmallCapStocks = From Stock In AllStocks _
+    Where Stock.Price < 10.0 _
+    Select Stock
+
+------------------------------------------------------------
+
+    Dim CompanyName As String = "ABC Company"
+    Dim OutstandingShares As Integer = 10000
+    Dim Capitalization As Double = 3000000.0
+
+------------------------------------------------------------
+
+    Dim CompanyName = "ABC Company"
+    Dim OutstandingShares = 10000
+    Dim Capitalization = 3000000.0
+
+------------------------------------------------------------
+
+        Dim WidgetCo As New Stock
+
+        With WidgetCo
+            .Ticker = "WC"
+            .Name = "Widget Corp."
+            .Price = 25.0
+        End With
+
+------------------------------------------------------------
+
+        Dim WidgetCo = New Stock With { _
+            .Ticker = "WC", _
+            .Name = "Widget Corp.", _
+            .Price = 25.0 _
+        }
+
+------------------------------------------------------------
+
+    Dim USStocks() = { _
+        New Stock With { _
+            .Ticker = "US1", _
+            .Name = "Western Company", _
+            .Price = 15.75}, _
+        New Stock With { _
+            .Ticker = "US2", _
+            .Name = "Eastern Company", _
+            .Price = 17.0}, _
+        New Stock With { _
+            .Ticker = "US3", _
+            .Name = "Midwest Company", _
+            .Price = 8.0} _
+    }
+
+------------------------------------------------------------
+
+Dim Stocks As XElement = _
+    <Stocks>
+        <Stock StockID="1">
+            <Ticker>S1</Ticker>
+            <Company>Company 1</Company>
+            <PriceQuote>25.00</PriceQuote>
+        </Stock>
+        <Stock StockID="2">
+            <Ticker>S2</Ticker>
+            <Company>Company 2</Company>
+            <PriceQuote>8.00</PriceQuote>
+        </Stock>
+    </Stocks>
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Linq
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim someNumbers As Integer() = {5, 4, 3, 2, 1, 0}
+
+        Dim query = From x In someNumbers _
+                Where x >= 3 _
+                Select x
+
+        For Each item In query
+            Console.WriteLine("{0} is >= 3", item)
+        Next
+    End Sub
+
+------------------------------------------------------------
+
+   Shared Function IsEven(ByVal x As Integer) As Boolean
+      If x Mod 2 = 0 Then
+         Return True
+      Else
+         Return False
+      End If
+   End Function
+
+------------------------------------------------------------
+
+Function(n) n Mod 2 = 0 
+
+------------------------------------------------------------
+
+    <Extension()> _
+    Public Function IsTickerValid(ByVal aTicker As String) As Boolean
+        Dim ValidTicker As Boolean = True
+
+        If aTicker.Length > 4 Then
+            ValidTicker = False
+        End If
+
+        Return ValidTicker
+    End Function
+
+------------------------------------------------------------
+
+Dim anAnonymous = New With {.FirstName = "Jodi", .LastName = "Fouche"}
+
+------------------------------------------------------------
+
+      Dim x As Nullable(Of Integer)
+      Dim y As Nullable(Of Integer)
+
+      Dim x As Integer?
+      Dim y As Integer?
+
+------------------------------------------------------------
+
+Sub OnClick(sender As Object, e As Object) Handles aButton.Click
+Sub OnClick Handles aButton.Click
+
+
+

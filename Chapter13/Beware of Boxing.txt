@@ -1,0 +1,35 @@
+Imports System
+Imports System.Threading
+
+Public Class EntryPoint
+    Private Shared counter As Integer = 0
+
+    'NEVER DO THIS!!!
+    Private Shared theLock As Integer = 0
+
+    Private Shared Sub ThreadFunc()
+        For i As Integer = 0 To 49
+            Monitor.Enter(theLock)
+            Try
+                Console.WriteLine(counter)
+
+                counter += 1
+            Finally
+                Monitor.Exit(theLock)
+            End Try
+        Next i
+    End Sub
+
+    Shared Sub Main()
+        Dim thread1 As Thread = _
+            New Thread(AddressOf EntryPoint.ThreadFunc)
+        Dim thread2 As Thread = _
+            New Thread(AddressOf EntryPoint.ThreadFunc)
+
+        thread1.Start()
+        thread2.Start()
+    End Sub
+End Class
+
+------------------------------------------------------------
+

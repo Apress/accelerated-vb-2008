@@ -1,0 +1,28 @@
+Imports System
+
+Public Class EntryPoint
+    Shared Sub Main(ByVal args As String())
+        Dim lit1 As String = "c:\windows\system32"
+        Dim lit2 As String = "c:\windows\system32"
+
+        Dim lit3 As String = vbCrLf & "Jack and Jill" & vbCrLf & _
+            "Went up the hill . . ." & vbCrLf
+
+        Console.WriteLine(lit3)
+
+        Console.WriteLine("Object.RefEq(lit1, lit2): {0}", _
+            Object.ReferenceEquals(lit1, lit2))
+
+        If args.Length > 0 Then
+            Console.WriteLine("Parameter given: {0}", args(0))
+
+            Dim strNew As String = String.Intern(args(0))
+
+            Console.WriteLine("Object.RefEq(lit1, strNew): {0}", _
+                Object.ReferenceEquals(lit1, strNew))
+        End If
+    End Sub
+End Class
+
+------------------------------------------------------------
+

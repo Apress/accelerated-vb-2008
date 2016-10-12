@@ -1,0 +1,40 @@
+Imports System
+Imports System.Threading
+Imports System.Runtime.InteropServices
+Imports System.ComponentModel
+Imports Microsoft.Win32.SafeHandles
+
+Public Class NamedEventCreator
+    <DllImport("KERNEL32.DLL", EntryPoint:="CreateEventW", SetLastError:=True)> _
+    Private Shared Function CreateEvent(ByVal lpEventAttributes As IntPtr, _
+        ByVal bManualReset As Boolean, ByVal bInitialState As Boolean, _
+        ByVal lpName As String) As SafeWaitHandle
+    End Function
+
+    Public Const INVALID_HANDLE_VALUE As Integer = -1
+
+    Public Shared Function CreateAutoResetEvent( _
+        ByVal initialState As Boolean, _ 
+        ByVal name As String) As AutoResetEvent
+
+        'Create named event.
+        Dim rawEvent As SafeWaitHandle = _
+            CreateEvent(IntPtr.Zero, False, False, name)
+
+        If rawEvent.IsInvalid Then
+            Throw New Win32Exception(Marshal.GetLastWin32Error())
+        End If
+
+        'Create a managed event type based on this handle.
+        Dim autoEvent As AutoResetEvent = New AutoResetEvent(False)
+
+        'Must clean up handle currently in autoEvent 
+        'before swapping it with the named one.
+        autoEvent.SafeWaitHandle = rawEvent
+
+        Return autoEvent
+    End Function
+End Class
+
+------------------------------------------------------------
+

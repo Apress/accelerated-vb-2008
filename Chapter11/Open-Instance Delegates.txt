@@ -1,0 +1,111 @@
+Imports System
+Imports System.Reflection
+Imports System.Collections.Generic
+
+Delegate Sub ApplyRaiseDelegate(ByVal emp As Employee, _
+                                ByVal percent As Decimal)
+
+Public Class Employee
+    Private mSalary As Decimal
+
+    Public Sub New(ByVal salary As Decimal)
+        Me.mSalary = salary
+    End Sub
+
+    Public ReadOnly Property Salary() As Decimal
+        Get
+            Return mSalary
+        End Get
+    End Property
+
+    Public Sub ApplyRaiseOf(ByVal percent As Decimal)
+        mSalary *= 1 + percent
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim Employees As List(Of Employee) = New List(Of Employee)
+
+        Employees.Add(New Employee(40000))
+        Employees.Add(New Employee(65000))
+        Employees.Add(New Employee(95000))
+
+        'Create open-instance delegate
+        Dim mi As MethodInfo = GetType(Employee).GetMethod("ApplyRaiseOf", _
+            BindingFlags.Public Or BindingFlags.Instance)
+
+        Dim applyRaise As ApplyRaiseDelegate = _
+            CType(System.Delegate.CreateDelegate(GetType(ApplyRaiseDelegate), _
+            mi), ApplyRaiseDelegate)
+
+        'Apply raise.
+        Dim e As Employee
+
+        For Each e In Employees
+            applyRaise(e, CType(0.1, Decimal))
+
+            'Send new salary to console.
+            Console.WriteLine("Employee's new salary = {0:C}", e.Salary)
+        Next
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Reflection
+Imports System.Collections.Generic
+
+Delegate Sub ApplyRaiseDelegate(Of T)(ByVal instance As T, _
+                                ByVal percent As Decimal)
+
+Public Class Employee
+    Private mSalary As Decimal
+
+    Public Sub New(ByVal salary As Decimal)
+        Me.mSalary = salary
+    End Sub
+
+    Public ReadOnly Property Salary() As Decimal
+        Get
+            Return mSalary
+        End Get
+    End Property
+
+    Public Sub ApplyRaiseOf(ByVal percent As Decimal)
+        mSalary *= 1 + percent
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim Employees As List(Of Employee) = New List(Of Employee)
+
+        Employees.Add(New Employee(40000))
+        Employees.Add(New Employee(65000))
+        Employees.Add(New Employee(95000))
+
+        'Create open-instance delegate
+        Dim mi As MethodInfo = GetType(Employee).GetMethod("ApplyRaiseOf", _
+                               BindingFlags.Public Or BindingFlags.Instance)
+
+        Dim applyRaise As ApplyRaiseDelegate(Of Employee) = _
+            CType([Delegate].CreateDelegate( _
+            GetType(ApplyRaiseDelegate(Of Employee)), mi), _
+            ApplyRaiseDelegate(Of Employee))
+
+        'Apply raise.
+        Dim e As Employee
+
+        For Each e In Employees
+            applyRaise(e, CType(0.1, Decimal))
+
+            'Send new salary to console.
+            Console.WriteLine("Employee's new salary = {0:C}", e.Salary)
+        Next
+    End Sub
+End Class
+
+------------------------------------------------------------
+

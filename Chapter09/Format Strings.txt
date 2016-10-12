@@ -1,0 +1,25 @@
+Imports System
+Imports System.Globalization
+Imports System.Windows.Forms
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim current As CultureInfo = CultureInfo.CurrentCulture
+        Dim germany As CultureInfo = New CultureInfo("de-DE")
+        Dim russian As CultureInfo = New CultureInfo("ru-RU")
+
+        Dim money As Double = 123.45
+
+        Dim localMoney As String = money.ToString("C", current)
+        MessageBox.Show(localMoney, "Local Money")
+
+        localMoney = money.ToString("C", germany)
+        MessageBox.Show(localMoney, "German Money")
+
+        localMoney = money.ToString("C", russian)
+        MessageBox.Show(localMoney, "Russian Money")
+    End Sub
+End Class
+
+------------------------------------------------------------
+

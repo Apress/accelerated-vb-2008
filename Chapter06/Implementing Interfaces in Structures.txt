@@ -1,0 +1,48 @@
+Public Interface IPowerable
+   Function RaiseToN(ByVal n As Integer)
+End Interface
+
+Public Structure AnInteger
+   Implements IPowerable
+
+   Public i As Integer
+
+   Public Sub New(ByVal value As Integer)
+      Me.i = value
+   End Sub
+
+   Public Function RaiseToN(ByVal n As Integer) As Object _
+      Implements IPowerable.RaiseToN
+
+      Return i ^ n
+   End Function
+End Structure
+
+Public Structure ADouble
+   Implements IPowerable
+
+   Public d As Double
+
+   Public Sub New(ByVal value As Double)
+      Me.d = value
+   End Sub
+
+   Public Function RaiseToN(ByVal n As Integer) As Object _
+      Implements IPowerable.RaiseToN
+
+      Return d ^ n
+   End Function
+End Structure
+
+Public Class EntryPoint
+   Shared Sub main()
+      Dim i As AnInteger = New AnInteger(2)
+      Dim d As ADouble = New ADouble(2.1)
+
+      Console.WriteLine(i.i & " cubed is " & i.RaiseToN(3))
+      Console.WriteLine(d.d & " squared is " & d.RaiseToN(2))
+   End Sub
+End Class
+
+------------------------------------------------------------
+

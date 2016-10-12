@@ -1,0 +1,29 @@
+Imports System
+Imports System.Collections.Generic
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim intList As IList(Of Integer) = _
+            CType(CreateClosedType(Of Integer)(GetType(List(Of ))), _
+            IList(Of Integer))
+
+        Dim doubleList As IList(Of Double) = _
+            CType(CreateClosedType(Of Double)(GetType(List(Of ))), _
+            IList(Of Double))
+
+        Console.WriteLine(intList)
+        Console.WriteLine(doubleList)
+    End Sub
+
+    Private Shared Function CreateClosedType(Of T)(ByVal genericType As Type) _
+        As Object
+
+        Dim typeArguments As Type() = {GetType(T)}
+        Dim closedType As Type = genericType.MakeGenericType(typeArguments)
+
+        Return Activator.CreateInstance(closedType)
+    End Function
+End Class
+
+------------------------------------------------------------
+

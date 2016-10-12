@@ -1,0 +1,51 @@
+    <Extension()> _
+    Public Function IsTickerValid(ByVal aTicker As String) As Boolean
+        Dim ValidTicker As Boolean = True
+
+        If aTicker.Length > 4 Then
+            ValidTicker = False
+        End If
+
+        Return ValidTicker
+    End Function
+
+------------------------------------------------------------
+
+Imports System.Runtime.CompilerServices
+
+Public Module Extensions
+   <Extension()> _
+   Public Function IsPrime(ByVal i As Integer) As Boolean
+      Dim PrimeNumbers As Integer() = {2, 3, 5, 7}
+
+      For Each item In PrimeNumbers
+         If i Mod item = 0 Then
+            Return False
+         End If
+      Next
+
+      Return True
+   End Function
+End Module
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim x As Integer = 11
+      Dim y As Integer = 6
+
+      If x.IsPrime Then
+         Console.WriteLine("x is a prime number.")
+      Else
+         Console.WriteLine("x is not a prime number.")
+      End If
+
+      If y.IsPrime Then
+         Console.WriteLine("y is a prime number.")
+      Else
+         Console.WriteLine("y is not a prime number.")
+      End If
+   End Sub
+End Class
+
+------------------------------------------------------------
+

@@ -1,0 +1,18 @@
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim IsEven As Func(Of Integer, Boolean) = _
+         Function(n) n Mod 2 = 0
+
+      Console.WriteLine(IsEven(20))
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim Cube = Function(x) x ^ 3
+
+      Console.WriteLine(Cube(5))
+   End Sub
+End Class

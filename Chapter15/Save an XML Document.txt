@@ -1,0 +1,31 @@
+Imports System.Linq
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim Genres() = {"Cool", "Screamin'", "Bebop", "Dixieland", "Classical"}
+      Dim iCounter = 1
+
+      Dim Genre_XElements = From Genre In Genres _
+                            Select <Genre>
+                                      <Name>
+                                         <%= Genre %>
+                                      </Name>
+                                   </Genre>
+
+      Dim Genre_XML = <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+                      <Genres>
+                         <%= Genre_XElements %>
+                      </Genres>
+
+      Dim GenreNames As IEnumerable(Of XElement) = _
+         Genre_XML.<Genres>.<Genre>.<Name>
+
+      For Each Item In GenreNames
+         Item.AddBeforeSelf(<ID><%= iCounter %></ID>)
+         iCounter += 1
+      Next
+
+      Genre_XML.Save("..\..\Genres.xml")
+      Console.WriteLine("Genres.xml saved to project directory.")
+   End Sub
+End Class

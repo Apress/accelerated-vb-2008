@@ -1,0 +1,38 @@
+Public Interface IGeometricShape
+    Sub Draw()
+End Interface
+
+Public Class Rectangle
+    Implements IGeometricShape
+
+    Public Sub Draw() Implements IGeometricShape.Draw
+        'Draw a rectangle.
+        Console.WriteLine("Rectangle drawn.")
+    End Sub
+End Class
+
+Public Class Circle
+    Implements IGeometricShape
+
+    Public Sub Draw() Implements IGeometricShape.Draw
+        'Draw a circle.
+        Console.WriteLine("Circle drawn.")
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Private Shared Sub DrawShape(ByVal shape As IGeometricShape)
+        shape.Draw()
+    End Sub
+
+    Shared Sub Main()
+        Dim aCircle As Circle = New Circle()
+        Dim aRectangle As Rectangle = New Rectangle()
+
+        DrawShape(aCircle)
+        DrawShape(aRectangle)
+    End Sub
+End Class
+
+------------------------------------------------------------
+

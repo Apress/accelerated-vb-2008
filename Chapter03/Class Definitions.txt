@@ -1,0 +1,368 @@
+Public Class Customer
+    'Fields/Members
+    Private mName As String
+    Private mCustomerID As Integer
+
+    'Constructor
+    Public Sub New()
+        MyBase.New()
+    End Sub
+
+    'Properties
+    Public Property Name() As String
+        Get
+            Return mName
+        End Get
+        Set(ByVal value As String)
+            mName = value
+        End Set
+    End Property
+
+    Public Property CustomerID() As Integer
+        Get
+            Return mCustomerID
+        End Get
+        Set(ByVal value As Integer)
+            mCustomerID = value
+        End Set
+    End Property
+
+    'Methods
+    Public Function SaveCustomerToDB() As Boolean
+        'Put code for this function here.
+        'For now, return success
+        Return True
+    End Function
+End Class
+
+------------------------------------------------------------
+
+Public Sub New()
+    MyBase.New()
+End Sub
+
+Public Sub New(ByVal aString as String)
+    Me.New()
+End Sub
+
+------------------------------------------------------------
+
+Public Property CustomerID() As Integer
+    Get
+        Return mCustomerID
+    End Get
+    Friend Set(ByVal value As Integer)
+        mCustomerID = value
+    End Set
+End Property
+
+------------------------------------------------------------
+
+'NOTE: Standard practice is that you preface Interface with a capital "I"
+Public Interface IMusician
+    Sub PlayMusic()
+End Interface
+
+Public Class TalentedPerson
+    Implements IMusician
+
+    Public Sub PlayMusic() Implements IMusician.PlayMusic
+
+    End Sub
+
+    Public Sub DoALittleDance()
+
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim Dude As New TalentedPerson()
+        Dim Musician As IMusician = Dude
+
+        Musician.PlayMusic()
+        Dude.PlayMusic()
+        Dude.DoALittleDance()
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Public Class A
+    Private x As Integer
+
+    Public Sub New(ByVal var As Integer)
+        Me.x = var
+    End Sub
+
+    Public Overridable Sub DoSomething()
+        System.Console.WriteLine("A.DoSomething")
+    End Sub
+End Class
+
+Public Class B
+    Inherits A
+
+    Public Sub New()
+        MyBase.New(123)
+
+        'Constructor code here
+    End Sub
+
+    Public Overloads Overrides Sub DoSomething()
+        System.Console.WriteLine("B.DoSomething")
+        MyBase.DoSomething()
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim b As B = New B()
+
+        b.DoSomething()
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Public Class A
+    Private x As Integer
+
+    Public Sub New(ByVal var As Integer)
+        Me.x = var
+    End Sub
+
+    Public Overridable Sub DoSomething()
+        System.Console.WriteLine("A.DoSomething")
+    End Sub
+
+    Public Sub UseMe()
+        Me.DoSomething()
+    End Sub
+
+    Public Sub UseMyClass()
+        MyClass.DoSomething()
+    End Sub
+End Class
+
+Public Class B
+    Inherits A
+
+    Public Sub New()
+        MyBase.New(123)
+    End Sub
+
+    Public Overloads Overrides Sub DoSomething()
+        System.Console.WriteLine("B.DoSomething")
+        MyBase.DoSomething()
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim b As B = New B()
+
+        b.UseMe()
+        b.UseMyClass()
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Public MustInherit Class GeometricShape
+    Public Overridable Sub Draw()
+    End Sub
+End Class
+
+Public Class Circle
+    Inherits GeometricShape
+
+    Public Overrides Sub Draw()
+        'Do some drawing.
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim Circle As New Circle
+
+        'This will not work!
+        'Dim shape2 As New GeometricShape
+
+        Circle.Draw()
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System.Collections
+
+Public MustInherit Class GeometricShape
+    Public MustOverride Sub Draw()
+End Class
+
+Public Class Rectangle
+    Inherits GeometricShape
+
+    Public Overrides Sub Draw()
+        System.Console.WriteLine("Rectangle.Draw")
+    End Sub
+End Class
+
+Public Class Circle
+    Inherits GeometricShape
+
+    Public Overrides Sub Draw()
+        System.Console.WriteLine("Circle.Draw")
+    End Sub
+End Class
+
+Public Class Drawing
+    Implements IEnumerable
+
+    Private Shapes As ArrayList
+
+    Public Sub New()
+        Shapes = New ArrayList()
+    End Sub
+    Public Function GetEnumerator() As IEnumerator _
+        Implements Collections.IEnumerable.GetEnumerator
+
+        Return New Iterator(Me)
+    End Function
+    Public Sub Add(ByVal Shape As GeometricShape)
+        Shapes.Add(Shape)
+    End Sub
+
+    Private Class Iterator
+        Implements IEnumerator
+
+        Private Position As Integer
+        Private Drawing As Drawing
+
+        Public Sub New(ByVal Drawing As Drawing)
+            Me.Drawing = Drawing
+            Me.Position = -1
+        End Sub
+
+        Public Sub Iterator(ByVal Drawing As Drawing)
+            Me.Drawing = Drawing
+            Me.Position = -1
+        End Sub
+        Public Sub Reset() Implements Collections.IEnumerator.Reset
+            Position = -1
+        End Sub
+
+        Public Function MoveNext() As Boolean _
+            Implements Collections.IEnumerator.MoveNext
+
+            Position += 1
+            Return (Position < Drawing.Shapes.Count)
+        End Function
+        Public ReadOnly Property Current() As Object _
+            Implements Collections.IEnumerator.Current
+
+            Get
+                Return Drawing.Shapes(Position)
+            End Get
+        End Property
+    End Class
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim Rectangle As New Rectangle
+        Dim Circle As New Circle
+        Dim Drawing As New Drawing
+
+        Drawing.Add(Rectangle)
+        Drawing.Add(Circle)
+
+        For Each Shape As GeometricShape In Drawing
+            Shape.Draw()
+        Next
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+    Public Class A
+        Public Class B
+
+        End Class
+    End Class
+
+    Public Class EntryPoint
+        Shared Sub Main()
+            Dim B As New A.B()
+        End Sub
+    End Class
+
+------------------------------------------------------------
+
+Imports System.Collections
+
+Public MustInherit Class GeometricShape
+    Public MustOverride Sub Draw()
+End Class
+
+Public Class Rectangle
+    Inherits GeometricShape
+
+    Public Overrides Sub Draw()
+        System.Console.WriteLine("Rectangle.Draw")
+    End Sub
+End Class
+
+Public Class Circle
+    Inherits GeometricShape
+
+    Public Overrides Sub Draw()
+        System.Console.WriteLine("Circle.Draw")
+    End Sub
+End Class
+
+Public Class Drawing
+    Private Shapes As ArrayList
+
+    Public Sub New()
+        Shapes = New ArrayList
+    End Sub
+
+    Public ReadOnly Property Count() As Integer
+        Get
+            Return Shapes.Count
+        End Get
+    End Property
+
+    Default Public ReadOnly Property Item(ByVal Index As Integer) As GeometricShape
+        Get
+            Return CType(Shapes(Index), GeometricShape)
+        End Get
+    End Property
+
+    Public Sub Add(ByVal Shape As GeometricShape)
+        Shapes.Add(Shape)
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim Rectangle As Rectangle = New Rectangle()
+        Dim Circle As Circle = New Circle()
+        Dim Drawing As Drawing = New Drawing()
+        Dim i As Integer = 0
+
+        Drawing.Add(Rectangle)
+        Drawing.Add(Circle)
+
+        For i = 0 To Drawing.Count - 1 Step 1
+            Dim Shape As GeometricShape = Drawing(i)
+
+            Shape.Draw()
+        Next
+    End Sub
+End Class
+
+------------------------------------------------------------
+

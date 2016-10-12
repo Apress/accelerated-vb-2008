@@ -1,0 +1,65 @@
+Option Strict Off
+
+Interface IGeneric(Of T)
+    Sub SomeMethod(ByVal x As T)
+End Interface
+
+Class A
+    Implements IGeneric(Of Integer)
+
+    Public Sub SomeMethod(ByVal x As Integer) _
+       Implements IGeneric(Of Integer).SomeMethod
+
+        Console.WriteLine("A.SomeMethod received " + x.ToString())
+    End Sub
+End Class
+
+Class B
+    Implements IGeneric(Of Double)
+
+    Public Sub SomeMethod(ByVal x As Double) _
+       Implements IGeneric(Of Double).SomeMethod
+
+        Console.WriteLine("B.SomeMethod received " + x.ToString())
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim ca As IGeneric(Of Integer) = New A()
+        Dim cb As IGeneric(Of Double) = New B()
+
+        ca.SomeMethod(123.456)
+        cb.SomeMethod(123.456)
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Option Strict On
+
+Interface INonGeneric
+    Sub SomeMethod(Of T)(ByVal x As T)
+End Interface
+
+Class A
+    Implements INonGeneric
+
+    Public Sub SomeMethod(Of T)(ByVal x As T) _
+       Implements INonGeneric.SomeMethod
+
+        Console.WriteLine("A.SomeMethod received " + x.ToString())
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim ca As INonGeneric = New A()
+
+        ca.SomeMethod(123.456)
+        ca.SomeMethod("123 point 456")
+    End Sub
+End Class
+
+------------------------------------------------------------
+

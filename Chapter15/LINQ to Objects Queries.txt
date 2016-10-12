@@ -1,0 +1,169 @@
+Imports System
+Imports System.Linq
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim Numbers() = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, _
+         15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, _
+         33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50}
+
+      Dim Query = From x In Numbers
+
+      For Each Item In Query
+         Console.WriteLine(Item.ToString)
+      Next
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Linq
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim Numbers() = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, _
+         15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, _
+         33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50}
+
+      Dim Query = From x In Numbers _
+                  Where x.ToString.Chars(0) = "3" _
+                  Select x
+
+      For Each Item In Query
+         Console.WriteLine(Item.ToString)
+      Next
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Linq
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim Numbers() = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, _
+         15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, _
+         33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50}
+
+      Dim Query = From x In Numbers _
+                  Where x Mod 5 = 0 _
+                  Order By x Descending _
+                  Select x
+
+      For Each Item In Query
+         Console.WriteLine(Item.ToString)
+      Next
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Linq
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim Numbers() = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, _
+         15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, _
+         33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50}
+
+      Dim Query = From x In Numbers _
+                  Select x
+
+      Console.WriteLine(Query.Min())
+      Console.WriteLine(Query.Max())
+      Console.WriteLine(Query.Count())
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Linq
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim Numbers() = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, _
+         15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, _
+         33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50}
+
+      Dim DivisibleBy10 = Numbers.Count(Function(n) n Mod 10 = 0)
+
+      Console.WriteLine(DivisibleBy10)
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Linq
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim Numbers() = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, _
+         15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, _
+         33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50}
+
+      Dim Query = From n In Numbers _
+                  Let MultipliedBy10 = n ^ 2 _
+                  Let ConstantString = "Squared" _
+                  Where n >= 25 And n <= 35 _
+                  Select n, ConstantString, MultipliedBy10
+
+      For Each Item In Query
+         Console.WriteLine(Item.n.ToString & " " & Item.ConstantString & _
+                           " Equals " & Item.MultipliedBy10 & ".")
+      Next
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Linq
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim Numbers() = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, _
+         15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, _
+         33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50}
+
+      Dim Subset() = {3, 11, 42}
+
+      Dim Query = From x In Numbers _
+                  Where Subset.Contains(x) _
+                  Select x
+
+      For Each Item In Query
+         Console.WriteLine(Item.ToString)
+      Next
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Linq
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim Names() = {"Jodi", "Charlotte", "James", "Kay"}
+
+      Dim Query = From n In Names _
+                  Let FirstName = _
+                     (From a In Names _
+                     Where (Left(a, 1) = "J") _
+                     Select a) _
+                  Where FirstName.Contains(n) _
+                  Select n
+
+      For Each Item In Query
+         Console.WriteLine(Item)
+      Next
+   End Sub
+End Class
+
+------------------------------------------------------------
+

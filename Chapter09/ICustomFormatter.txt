@@ -1,0 +1,112 @@
+Imports System
+Imports System.Text
+Imports System.Globalization
+
+Public Class ComplexDbgFormatter
+    Implements ICustomFormatter
+    Implements IFormatProvider
+
+    'IFormatProvider implementation
+    Public Function GetFormat(ByVal formatType As Type) As Object _
+        Implements System.IFormatProvider.GetFormat
+
+        If formatType Is GetType(ICustomFormatter) Then
+            Return Me
+        Else
+            Return CultureInfo.CurrentCulture.GetFormat(formatType)
+        End If
+    End Function
+
+    'ICustomFormatter implementation
+    Public Function Format(ByVal formatString As String, ByVal arg As Object, _
+        ByVal formatProvider As IFormatProvider) As String _
+        Implements System.ICustomFormatter.Format
+
+        If TypeOf arg Is IFormattable AndAlso formatString = "DBG" Then
+            Dim cpx As Complex = DirectCast(arg, Complex)
+
+            'Generate debugging output for this object.
+            Dim sb As StringBuilder = New StringBuilder()
+
+            sb.Append(arg.[GetType]().ToString() & "" & vbLf & "")
+            sb.AppendFormat("" & vbTab & "real:" & vbTab & "{0}" & _
+                vbLf & "", cpx.Real)
+            sb.AppendFormat("" & vbTab & "imaginary:" & vbTab & "{0}" & _
+                vbLf & "", cpx.Img)
+
+            Return sb.ToString()
+        Else
+            Dim formattable As IFormattable = TryCast(arg, IFormattable)
+
+            If formattable Is Nothing Then
+                Return formattable.ToString(formatString, formatProvider)
+            Else
+                Return arg.ToString()
+            End If
+        End If
+    End Function
+End Class
+
+Public Structure Complex
+    Implements IFormattable
+
+    Private mReal As Double
+    Private mImaginary As Double
+
+    Public Sub New(ByVal real As Double, ByVal imaginary As Double)
+        Me.mReal = real
+        Me.mImaginary = imaginary
+    End Sub
+
+    Public ReadOnly Property Real() As Double
+        Get
+            Return mReal
+        End Get
+    End Property
+
+    Public ReadOnly Property Img() As Double
+        Get
+            Return mImaginary
+        End Get
+    End Property
+
+    'IFormattable implementation
+    Public Overloads Function ToString(ByVal format As String, _
+        ByVal formatProvider As IFormatProvider) As String _
+        Implements IFormattable.ToString
+
+        Dim sb As StringBuilder = New StringBuilder()
+
+        sb.Append("( ")
+        sb.Append(mReal.ToString(format, formatProvider))
+        sb.Append(" : ")
+        sb.Append(mImaginary.ToString(format, formatProvider))
+        sb.Append(" )")
+
+        Return sb.ToString()
+    End Function
+End Structure
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim local As CultureInfo = CultureInfo.CurrentCulture
+        Dim germany As CultureInfo = New CultureInfo("de-DE")
+        Dim cpx As Complex = New Complex(12.3456, 1234.56)
+        Dim strCpx As String = cpx.ToString("F", local)
+
+        Console.WriteLine(strCpx)
+        strCpx = cpx.ToString("F", germany)
+
+        Console.WriteLine(strCpx)
+
+        Dim dbgFormatter As ComplexDbgFormatter = New ComplexDbgFormatter()
+
+        strCpx = [String].Format(dbgFormatter, "{0:DBG}", cpx)
+
+        Console.WriteLine("" & vbCrLf & "Debugging output:" & _
+            vbCrLf & "{0}", strCpx)
+    End Sub
+End Class
+
+------------------------------------------------------------
+

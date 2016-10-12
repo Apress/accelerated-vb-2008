@@ -1,0 +1,162 @@
+Public Class A
+    Public Shared Sub SomeFunction()
+        System.Console.WriteLine("SomeFunction() called")
+    End Sub
+
+    Shared Sub Main()
+        A.SomeFunction()
+        SomeFunction()
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Public Class A
+   Public x As Integer
+   Public y As Integer
+   Public Shared z As Integer
+
+   Public Sub SomeOperation()
+      x = 1
+      Me.y = 2
+      A.z = 3
+   End Sub
+End Class
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim obj As A = New A()
+
+      obj.SomeOperation()
+      System.Console.WriteLine("x = {0}, y = {1}, z = {2}", obj.x, obj.y, A.z)
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Public Structure MyStruct
+    Public val As Integer
+End Structure
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim myValue As MyStruct = New MyStruct()
+
+        myValue.val = 10
+        PassByValue(myValue)
+        Console.WriteLine("Result of PassByValue: myValue.val = {0}", myValue.val)
+
+        PassByRef(myValue)
+        Console.WriteLine("Result of PassByRef: myValue.val = {0}", myValue.val)
+    End Sub
+
+    Shared Sub PassByValue(ByVal myValue As MyStruct)
+        myValue.val = 50
+    End Sub
+
+    Shared Sub PassByRef(ByRef myValue As MyStruct)
+        myValue.val = 42
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim myObject As Object = New Object()
+
+        Console.WriteLine("myObject.GetHashCode() == {0}", myObject.GetHashCode())
+        PassByRef(myObject)
+        Console.WriteLine("myObject.GetHashCode() == {0}", myObject.GetHashCode())
+    End Sub
+
+    Shared Sub PassByRef(ByRef myObject As Object)
+        'Assign a new instance to the variable.
+        myObject = New Object()
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Public Class EntryPoint
+    Shared Sub Main()
+        VarArgs(42)
+        VarArgs(42, 43, 44)
+        VarArgs(44, 56, 23, 234, 45, 123)
+    End Sub
+
+    Shared Sub VarArgs(ByVal val1 As Integer, ByVal ParamArray vals As Integer())
+        Console.WriteLine("val1: {0}", val1)
+
+        For Each i As Integer In vals
+            Console.WriteLine("vals[]: {0}", i)
+        Next
+
+        Console.WriteLine()
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Public Class A
+    Public Overridable Sub SomeMethod()
+        Console.WriteLine("A.SomeMethod")
+    End Sub
+End Class
+
+Public Class B
+    Inherits A
+
+    Public Sub SomeMethod()
+        Console.WriteLine("B.SomeMethod")
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim objB As B = New B()
+        Dim objA As A = objB
+
+        objA.SomeMethod()
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Public Class A
+    Public Overridable Sub SomeMethod()
+        Console.WriteLine("A.SomeMethod")
+    End Sub
+End Class
+
+Public Class B
+    Inherits A
+
+    Public Overrides Sub SomeMethod()
+        Console.WriteLine("B.SomeMethod")
+
+        MyBase.SomeMethod()
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim objB As B = New B
+        Dim objA As A = objB
+
+        objA.SomeMethod()
+    End Sub
+End Class
+
+------------------------------------------------------------
+

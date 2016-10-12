@@ -1,0 +1,134 @@
+Imports System
+Imports System.Threading
+
+Public Class EntryPoint
+    Private Shared counter As Integer = 0
+    Private Shared theLock As Object = New Object()
+
+    Private Shared Sub ThreadFunc1()
+        SyncLock theLock
+            For i As Integer = 0 To 5
+                Monitor.Wait(theLock, Timeout.Infinite)
+
+                Console.WriteLine("{0} from Thread {1}", counter, _
+                    Thread.CurrentThread.GetHashCode())
+
+                Monitor.Pulse(theLock)
+
+                counter += 1
+            Next i
+        End SyncLock
+    End Sub
+
+    Private Shared Sub ThreadFunc2()
+        SyncLock theLock
+            For i As Integer = 0 To 5
+                Monitor.Pulse(theLock)
+                Monitor.Wait(theLock, Timeout.Infinite)
+
+                Console.WriteLine("{0} from Thread {1}", counter, _
+                    Thread.CurrentThread.GetHashCode())
+
+                counter += 1
+            Next i
+        End SyncLock
+    End Sub
+
+    Shared Sub Main()
+        Dim thread1 As Thread = _
+            New Thread(AddressOf EntryPoint.ThreadFunc1)
+        Dim thread2 As Thread = _
+            New Thread(AddressOf EntryPoint.ThreadFunc2)
+
+        thread1.Start()
+        thread2.Start()
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Threading
+Imports System.Collections
+
+Public Class CrudeThreadPool
+    Private workQueue As Queue
+    Private workLock As Object
+    Private threads As Thread()
+    Private mStop As Integer
+
+    Private Shared ReadOnly MAX_WORK_THREADS As Integer = 4
+    Private Shared ReadOnly WAIT_TIMEOUT As Integer = 2000
+
+    Public Delegate Sub WorkDelegate()
+
+    Public Sub New()
+        mStop = 0
+        workLock = New Object()
+        workQueue = New Queue()
+        threads = New Thread(MAX_WORK_THREADS - 1) {}
+
+        Dim i As Integer = 0
+        Do While i < MAX_WORK_THREADS
+            threads(i) = New Thread(AddressOf Me.ThreadFunc)
+            threads(i).Start()
+
+            i += 1
+        Loop
+    End Sub
+
+    Private Sub ThreadFunc()
+        SyncLock workLock
+            Dim shouldStop As Integer = 0
+            Do
+                shouldStop = Interlocked.Exchange(mStop, mStop)
+                If shouldStop = 0 Then
+                    Dim workItem As WorkDelegate = Nothing
+
+                    If Monitor.Wait(workLock, WAIT_TIMEOUT) Then
+                        'Process the item on the front of the queue
+                        SyncLock workQueue
+                            workItem = CType(workQueue.Dequeue(), _
+                                WorkDelegate)
+                        End SyncLock
+                        workItem()
+                    End If
+                End If
+            Loop While shouldStop = 0
+        End SyncLock
+    End Sub
+
+    Public Sub SubmitWorkItem(ByVal item As WorkDelegate)
+        SyncLock workLock
+            SyncLock workQueue
+                workQueue.Enqueue(item)
+            End SyncLock
+
+            Monitor.Pulse(workLock)
+        End SyncLock
+    End Sub
+
+    Public Sub Shutdown()
+        Interlocked.Exchange(mStop, 1)
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Private Shared Sub WorkFunction()
+        Console.WriteLine("WorkFunction() called on Thread {0}", _
+            Thread.CurrentThread.GetHashCode())
+    End Sub
+
+    Shared Sub Main()
+        Dim pool As CrudeThreadPool = New CrudeThreadPool()
+        For i As Integer = 0 To 11
+            pool.SubmitWorkItem(New CrudeThreadPool.WorkDelegate _
+                (AddressOf EntryPoint.WorkFunction))
+        Next i
+
+        pool.Shutdown()
+    End Sub
+End Class
+
+------------------------------------------------------------
+

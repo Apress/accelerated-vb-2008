@@ -1,0 +1,25 @@
+Imports System
+
+Public Class Animal
+End Class
+
+Public Class Dog
+   Inherits Animal
+End Class
+
+Public Class Cat
+   Inherits Animal
+End Class
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim dogs() As Dog = New Dog(3) {}
+      Dim cats() As Cat = New Cat(2) {}
+
+      Dim animals() As Animal = dogs
+      Dim moreAnimals() As Animal = cats
+   End Sub
+End Class
+
+------------------------------------------------------------
+

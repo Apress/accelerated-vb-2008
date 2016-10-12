@@ -1,0 +1,93 @@
+Imports System.Linq
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim xml As XDocument = XDocument.Load("..\..\Musicians.xml")
+
+      Dim query = From m In xml.Elements("Musicians").Elements("Musician")
+
+      For Each item In query
+         Console.WriteLine(item.Element("Name").Value)
+      Next
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System.Linq
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim xml As XDocument = XDocument.Load("..\..\Musicians.xml")
+
+      Dim query = From m In xml.Elements("Musicians").Elements("Musician") _
+                          Select m.Element("Name").Value
+
+
+      For Each item In query
+         Console.WriteLine(item)
+      Next
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System.Linq
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim xml As XDocument = XDocument.Load("..\..\Musicians.xml")
+
+      Dim query = From m In xml.Elements("Musicians").Elements("Musician") _
+                          Select m.Element("Genre").Value Distinct
+
+      For Each item In query
+         Console.WriteLine(item)
+      Next
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System.Linq
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim xml As XDocument = XDocument.Load("..\..\Musicians.xml")
+
+      Dim query = From m In xml.Elements("Musicians").Elements("Musician") _
+                  Where m.Element("Genre").Value = 4 _
+                  Select m.Element("Name").Value
+
+      For Each item In query
+         Console.WriteLine(item)
+      Next
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System.Linq
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim Musicians As XDocument = XDocument.Load("..\..\Musicians.xml")
+      Dim Genres As XDocument = XDocument.Load("..\..\Genres.xml")
+
+      Dim MQuery = From M In Musicians.Elements("Musicians").Elements("Musician")
+      Dim GQuery = From G In Genres.Elements("Genres").Elements("Genre")
+
+      Dim Query = From M In MQuery _
+                  Join G In GQuery On M.Element("Genre").Value _
+                  Equals G.Element("ID").Value _
+                  Select Musician = M.Element("Name").Value, _
+                         Genre = G.Element("Name").Value
+
+      For Each Item In Query
+         Console.WriteLine(Item.Musician & " plays " & Item.Genre & " jazz.")
+      Next
+   End Sub
+End Class
+
+------------------------------------------------------------
+

@@ -1,0 +1,18 @@
+Public Class Apple
+    Public Shared Operator +(ByVal rhs As Apple, ByVal lhs As Apple) As Apple
+        'Method does nothing & exists only for example.
+        Return rhs
+    End Operator
+End Class
+
+Public Class GreenApple
+    Inherits Apple
+
+    'INVALID - This will not compile!
+    Public Overloads Shared Operator +(ByVal rhs As Apple, ByVal lhs As Apple) _
+        As Apple
+
+        'Method does nothing & exists only for example.
+        Return rhs
+    End Operator
+End Class

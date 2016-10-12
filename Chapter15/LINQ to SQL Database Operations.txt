@@ -1,0 +1,136 @@
+Imports System
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim DB_Connection As New String("Data Source=.\SQLEXPRESS;" & _
+            "Initial Catalog=AVB2008;Integrated Security=True")
+      Dim AVB_DataContext As New DataContext(DB_Connection)
+
+      Dim Musicians As Table(Of Musician) = AVB_DataContext.GetTable(Of Musician)()
+      Dim Genres As Table(Of Genre) = AVB_DataContext.GetTable(Of Genre)()
+
+      Dim NewMusician = New Musician With {.Musician = "Jon Faddis", .Genre = 2}
+      Musicians.Add(NewMusician)
+
+      Musicians.Add(New Musician With {.Musician = "William Chase", .Genre = 2})
+
+      AVB_DataContext.SubmitChanges()
+
+      Dim Query = From m In Musicians _
+                  Select m.Musician, m.Genre
+
+      For Each Item In Query
+         Console.WriteLine("Musicians Name: " & Item.Musician & _
+                           " | Musicians Genre: " & Item.Genre)
+      Next
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim DB_Connection As New String("Data Source=.\SQLEXPRESS;" & _
+            "Initial Catalog=AVB2008;Integrated Security=True")
+      Dim AVB_DataContext As New DataContext(DB_Connection)
+
+      Dim Musicians As Table(Of Musician) = AVB_DataContext.GetTable(Of Musician)()
+      Dim Genres As Table(Of Genre) = AVB_DataContext.GetTable(Of Genre)()
+
+      Dim Query = From m In Musicians _
+                  Where m.Musician = "Jon Faddis" Or m.Musician = "William Chase" _
+                  Select m.Musician, m.Genre
+
+      For Each Item In Query
+         Console.WriteLine("Musicians Name: " & Item.Musician & _
+                           " | Musicians Genre: " & Item.Genre)
+      Next
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim DB_Connection As New String("Data Source=.\SQLEXPRESS;" & _
+            "Initial Catalog=AVB2008;Integrated Security=True")
+      Dim AVB_DataContext As New DataContext(DB_Connection)
+
+      Dim Musicians As Table(Of Musician) = AVB_DataContext.GetTable(Of Musician)()
+      Dim Genres As Table(Of Genre) = AVB_DataContext.GetTable(Of Genre)()
+
+      Dim BC As Musician = (From j In Musicians _
+                           Where j.Musician.Contains("Chase")).Single
+
+      BC.Musician = "Bill Chase"
+
+      AVB_DataContext.SubmitChanges()
+
+      Dim Query = From j In Musicians
+
+      For Each Item In Query
+         Console.WriteLine("Musicians Name: " & Item.Musician & _
+                           " | Musicians Genre: " & Item.Genre)
+      Next
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim DB_Connection As New String("Data Source=.\SQLEXPRESS;" & _
+            "Initial Catalog=AVB2008;Integrated Security=True")
+      Dim AVB_DataContext As New DataContext(DB_Connection)
+
+      Dim Musicians As Table(Of Musician) = AVB_DataContext.GetTable(Of Musician)()
+      Dim Genres As Table(Of Genre) = AVB_DataContext.GetTable(Of Genre)()
+
+      Dim JF As Musician = (From j In Musicians _
+                           Where j.Musician.Contains("Faddis")).Single
+
+      Musicians.Remove(JF)
+
+      AVB_DataContext.SubmitChanges()
+
+      Dim Query = From j In Musicians
+
+      For Each Item In Query
+         Console.WriteLine("Musicians Name: " & Item.Musician & _
+                           " | Musicians Genre: " & Item.Genre)
+      Next
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim DB_Connection As New String("Data Source=.\SQLEXPRESS;" & _
+            "Initial Catalog=AVB2008;Integrated Security=True")
+      Dim AVB_DataContext As New DataContext(DB_Connection)
+
+      Dim Musicians As Table(Of Musician) = AVB_DataContext.GetTable(Of Musician)()
+
+      Dim Query = From m In Musicians _
+                  Where m.Musician = "Jon Faddis" Or m.Musician = "William Chase" _
+                  Select m.Musician, m.Genre
+
+      AVB_DataContext.Log = Console.Out
+
+      For Each Item In Query
+         Console.WriteLine(Item.Musician & " plays " & Item.Genre & ".")
+      Next
+   End Sub
+End Class
+
+------------------------------------------------------------
+

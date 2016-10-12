@@ -1,0 +1,41 @@
+Imports System
+Imports System.Threading
+
+Public Class EntryPoint
+    Private Shared threadData As Long = 1
+    Private Shared rwl As New ReaderWriterLockSlim
+
+    Shared Sub Main()
+        Dim Thread1 As Thread
+        Dim Thread2 As Thread
+
+        Thread1 = New Thread(New ThreadStart(AddressOf Thread1Read))
+        Thread2 = New Thread(New ThreadStart(AddressOf Thread2Read))
+        Thread1.Start()
+        Thread2.Start()
+    End Sub
+
+    Shared Sub Thread1Read()
+        Dim iCounter As Integer
+
+        For iCounter = 1 To 10
+            rwl.EnterReadLock()
+            Console.WriteLine("Thread 1 reads: " & threadData)
+            Thread.Sleep(10)
+            rwl.ExitReadLock()
+        Next
+    End Sub
+
+    Shared Sub Thread2Read()
+        Dim iCounter As Integer
+
+        For iCounter = 1 To 10
+            rwl.EnterReadLock()
+            Console.WriteLine("Thread 2 reads: " & threadData)
+            rwl.ExitReadLock()
+        Next
+    End Sub
+End Class
+
+------------------------------------------------------------
+

@@ -1,0 +1,33 @@
+Function ComputeAvg(ByVal Param1 As Integer, ByVal Param2 As Integer) As Double
+    Return (Param1 + Param2) / 2
+End Function
+
+------------------------------------------------------------
+
+Function ComputeAvg(ByVal Param1 As Object, ByVal Param2 As Object) As Object
+    Return (Convert.ToInt32(Param1) + Convert.ToInt32(Param2)) / 2
+End Function
+
+------------------------------------------------------------
+
+Option Explicit On
+. . . 
+Dim VarDeclared As Double
+
+VarDeclared = ComputeAvg(108, 7933)
+VarUndeclared = ComputeAvg(108, 7933)
+
+------------------------------------------------------------
+
+Option Strict On
+. . . 
+Dim x As Double = 0.0
+
+x = ComputeAvg(108, 7933)
+
+Function ComputeAvg(ByVal Param1 As Object, ByVal Param2 As Object) As Object
+    Return (Convert.ToInt32(Param1) + Convert.ToInt32(Param2)) / 2
+End Function
+
+------------------------------------------------------------
+

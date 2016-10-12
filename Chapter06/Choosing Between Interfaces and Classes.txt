@@ -1,0 +1,116 @@
+   Public Interface IMyOperations
+      Sub Operation1()
+      Sub Operation2()
+   End Interface
+
+   Public Class ClientClass
+      Implements IMyOperations
+
+      Public Sub Operation1() Implements IMyOperations.Operation1
+         'Do op 1
+      End Sub
+
+      Public Sub Operation2() Implements IMyOperations.Operation2
+         'Do op 2
+      End Sub
+   End Class
+
+------------------------------------------------------------
+
+   Public Interface IMyOperations
+      Sub Operation1()
+      Sub Operation2()
+   End Interface
+
+   Public Interface IMyOperations2
+      Sub Operation1()
+      Sub Operation2()
+      Sub Operation3()
+   End Interface
+
+   Public Class ClientClass
+      Implements IMyOperations, IMyOperations2
+
+      Public Sub Operation1() Implements IMyOperations.Operation1
+         ' Do op 1
+      End Sub
+
+      Public Sub Operation2() Implements IMyOperations.Operation2
+         ' Do op 2
+      End Sub
+
+      Public Sub Operation21() Implements IMyOperations2.Operation1
+         ' Do op 2.1
+      End Sub
+
+      Public Sub Operation22() Implements IMyOperations2.Operation2
+         ' Do op 2.2
+      End Sub
+
+      Public Sub Operation3() Implements IMyOperations2.Operation3
+         ' Do op 2.3
+      End Sub
+   End Class
+
+   Public Class AnotherClass
+      Public Sub DoWork(ByVal ops As IMyOperations)
+         ' Do ops
+      End Sub
+   End Class
+
+------------------------------------------------------------
+
+Public MustInherit Class MyOperations
+   Public MustOverride Sub Operation1()
+   Public MustOverride Sub Operation2()
+End Class
+
+Public Class ClientClass
+   Inherits MyOperations
+
+   Public Overrides Sub Operation1()
+      ' Do op 1
+   End Sub
+
+   Public Overrides Sub Operation2()
+      ' Do op 2
+   End Sub
+End Class
+
+Public Class AnotherClass
+   Public Sub DoWork(ByVal ops As MyOperations)
+      ' Do ops
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Public MustInherit Class MyOperations
+   Public MustOverride Sub Operation1()
+   Public MustOverride Sub Operation2()
+
+   Public Sub Operation3()
+      'Do op 3
+   End Sub
+End Class
+
+Public Class ClientClass
+   Inherits MyOperations
+
+   Public Overrides Sub Operation1()
+      ' Do op 1
+   End Sub
+
+   Public Overrides Sub Operation2()
+      ' Do op 2
+   End Sub
+End Class
+
+Public Class AnotherClass
+   Public Sub DoWork(ByVal ops As MyOperations)
+      ops.Operation3()
+   End Sub
+End Class
+
+------------------------------------------------------------
+

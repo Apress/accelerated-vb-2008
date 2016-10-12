@@ -1,0 +1,32 @@
+Imports System
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim array1() As Integer = New Integer(5) {}
+        Dim array2() As Integer = New Integer() {2, 4, 6, 8}
+        Dim array3() As Integer = {1, 3, 5, 7}
+
+        Dim i As Integer = 0
+
+        For i = 0 To array1.Length - 1
+            array1(i) = i * 2
+        Next
+
+        For Each item As Integer In array1
+            Console.WriteLine("array1: " + item.ToString)
+        Next
+        Console.WriteLine(vbCrLf)
+
+        For Each item As Integer In array2
+            Console.WriteLine("array2: " + item.ToString)
+        Next
+        Console.WriteLine(vbCrLf)
+
+        For Each item As Integer In array3
+            Console.WriteLine("array3: " + item.ToString)
+        Next
+    End Sub
+End Class
+
+------------------------------------------------------------
+

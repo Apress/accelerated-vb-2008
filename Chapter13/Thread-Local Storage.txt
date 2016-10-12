@@ -1,0 +1,88 @@
+Imports System
+Imports System.Threading
+
+Public Class TLSClass
+    Public Sub New()
+        Console.WriteLine("Creating TLSClass")
+    End Sub
+End Class
+
+Public Class TLSFieldClass
+    <ThreadStatic()> _
+    Public Shared tlsdata As TLSClass = New TLSClass()
+End Class
+
+Public Class EntryPoint
+    Private Shared Sub ThreadFunc()
+        Console.WriteLine("Thread {0} starting . . . ", _
+            Thread.CurrentThread.GetHashCode())
+
+        Console.WriteLine("tlsdata for this thread is ""{0}""", _
+            TLSFieldClass.tlsdata)
+
+        Console.WriteLine("Thread {0} exiting", Thread.CurrentThread.GetHashCode())
+    End Sub
+
+    Shared Sub Main()
+        Dim thread1 As Thread = _
+            New Thread(AddressOf EntryPoint.ThreadFunc)
+        Dim thread2 As Thread = _
+            New Thread(AddressOf EntryPoint.ThreadFunc)
+
+        thread1.Start()
+        thread2.Start()
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Threading
+
+Public Class TLSClass
+    Private Shared mSlot As LocalDataStoreSlot = Nothing
+
+    Shared Sub New()
+        mSlot = Thread.AllocateDataSlot()
+    End Sub
+
+    Public Sub New()
+        Console.WriteLine("Creating TLSClass")
+    End Sub
+
+    Public Shared ReadOnly Property TlsSlot() As TLSClass
+        Get
+            Dim obj As Object = Thread.GetData(mSlot)
+            If obj Is Nothing Then
+                obj = New TLSClass()
+                Thread.SetData(mSlot, obj)
+            End If
+            Return CType(obj, TLSClass)
+        End Get
+    End Property
+End Class
+
+Public Class EntryPoint
+    Private Shared Sub ThreadFunc()
+        Console.WriteLine("Thread {0} starting . . . ", _
+            Thread.CurrentThread.GetHashCode())
+
+        Console.WriteLine("tlsdata for this thread is ""{0}""", _
+            TLSClass.TlsSlot)
+        Console.WriteLine("Thread {0} exiting", _
+            Thread.CurrentThread.GetHashCode())
+    End Sub
+
+    Shared Sub Main()
+        Dim thread1 As Thread = _
+            New Thread(AddressOf EntryPoint.ThreadFunc)
+        Dim thread2 As Thread = _
+            New Thread(AddressOf EntryPoint.ThreadFunc)
+
+        thread1.Start()
+        thread2.Start()
+    End Sub
+End Class
+
+------------------------------------------------------------
+

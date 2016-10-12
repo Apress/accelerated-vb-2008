@@ -1,0 +1,38 @@
+﻿Imports System
+Imports System.Text.RegularExpressions
+
+Public Class EntryPoint
+    Shared Sub Main(ByVal args As String())
+        If args.Length < 1 Then
+            Console.WriteLine("You must provide a string.")
+            Return
+        End If
+
+        Dim pattern As String = _
+        "# First part match " & vbCrLf & _
+        "([01]?\d\d?         # At least one digit," & vbCrLf & _
+        "                    # possibly prepended by 0 or 1" & vbCrLf & _
+        "                    # and possibly followed by another digit" & _
+        vbCrLf & "# OR " & vbCrLf & _
+        "|2[0-4]\d          # Starts with a 2, after a number from 0-4" & _
+        vbCrLf & "                   # and then any digit" & vbCrLf & _
+        "# OR " & vbCrLf & _
+        "|25[0-5])          # 25 followed by a number from 0-5" & vbCrLf & _
+        "\.                 # The whole group is followed by a period." & _
+        vbCrLf & "# REPEAT " & vbCrLf & "([01]?\d\d?|2[0-4]\d|25[0-5])\. " & _
+        vbCrLf & "# REPEAT " & vbCrLf & "([01]?\d\d?|2[0-4]\d|25[0-5])\. " & _
+        vbCrLf & "# REPEAT " & vbCrLf & "([01]?\d\d?|2[0-4]\d|25[0-5])"
+
+        Dim regex As Regex = _
+            New Regex(pattern, RegexOptions.IgnorePatternWhitespace)
+
+        Dim match As Match = regex.Match(args(0))
+
+        While match.Success
+            Console.WriteLine("IP Address found at {0} with value of {1}", _
+                match.Index, match.Value)
+
+            match = match.NextMatch()
+        End While
+    End Sub
+End Class

@@ -1,0 +1,18 @@
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim x = 300
+      Dim CurrentTime = DateTime.Now
+      Dim Publisher = "Apress"
+
+      Console.WriteLine(x.GetType)
+      Console.WriteLine(CurrentTime.GetType)
+      Console.WriteLine(Publisher.GetType)
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Dim WarehouseEmployees = 
+From E In Employees
+Where E.Department = “Warehouse”
+Select E.FirstName, E.LastName

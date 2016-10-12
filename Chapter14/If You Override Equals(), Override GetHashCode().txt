@@ -1,0 +1,83 @@
+Public NotInheritable Class Point
+    Private coordinates As Single()
+    Private precomputedHash As Integer
+
+    'Other methods removed for clarity.
+
+    Public Overrides Function Equals(ByVal other As Object) As Boolean
+        Dim result As Boolean = False
+        Dim that As Point = TryCast(other, Point)
+
+        If Not that Is Nothing Then
+            result = (Me.coordinates Is that.coordinates)
+        End If
+
+        Return result
+    End Function
+
+    Public Overrides Function GetHashCode() As Integer
+        Return precomputedHash
+    End Function
+
+    Public Shared Operator = (ByVal pt1 As Point, ByVal pt2 As Point) As Boolean
+        If pt1.GetHashCode() <> pt2.GetHashCode() Then
+            Return False
+        Else
+            Return Object.Equals(pt1, pt2)
+        End If
+    End Operator
+
+    Public Shared Operator <>(ByVal pt1 As Point, ByVal pt2 As Point) As Boolean
+        If pt1.GetHashCode() <> pt2.GetHashCode() Then
+            Return True
+        Else
+            Return Not Object.Equals(pt1, pt2)
+        End If
+    End Operator
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Public NotInheritable Class ComplexNumber
+    Private ReadOnly real As Double
+    Private ReadOnly imaginary As Double
+
+    'Other methods removed for clarity.
+
+    Public Sub New(ByVal real As Double, ByVal imaginary As Double)
+        Me.real = real
+        Me.imaginary = imaginary
+    End Sub
+
+    Public Overrides Function Equals(ByVal other As Object) As Boolean
+        Dim result As Boolean = False
+        Dim that As ComplexNumber = TryCast(other, ComplexNumber)
+
+        If Not that Is Nothing Then
+            result = (Me.real = that.real) AndAlso (Me.imaginary = that.imaginary)
+        End If
+
+        Return result
+    End Function
+
+    Public Overrides Function GetHashCode() As Integer
+        Return Fix(Math.Sqrt(Math.Pow(Me.real, 2) * Math.Pow(Me.imaginary, 2)))
+    End Function
+
+    Public Shared Operator =(ByVal num1 As ComplexNumber, _
+        ByVal num2 As ComplexNumber) As Boolean
+
+        Return Object.Equals(num1, num2)
+    End Operator
+
+    Public Shared Operator <>(ByVal num1 As ComplexNumber, _
+        ByVal num2 As ComplexNumber) As Boolean
+
+        Return Not Object.Equals(num1, num2)
+    End Operator
+End Class
+
+------------------------------------------------------------
+

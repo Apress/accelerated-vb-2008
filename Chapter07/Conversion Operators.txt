@@ -1,0 +1,48 @@
+Imports System
+
+Public Structure Complex
+    Private Real As Double
+    Private Imaginary As Double
+
+    Public Sub New(ByVal real As Double, ByVal imaginary As Double)
+        Me.Real = real
+        Me.Imaginary = imaginary
+    End Sub
+
+    'System.Object override
+    Public Overrides Function ToString() As String
+        Return System.String.Format("({0}, {1})", Real, Imaginary)
+    End Function
+
+    Public ReadOnly Property Magnitude() As Double
+        Get
+            Return Math.Sqrt(Math.Pow(Me.Real, 2) + Math.Pow(Me.Imaginary, 2))
+        End Get
+    End Property
+
+    Public Shared Widening Operator CType(ByVal d As Double) As Complex
+        Return New Complex(d, 0)
+    End Operator
+
+    Public Shared Narrowing Operator CType(ByVal c As Complex) As Double
+        Return c.Magnitude
+    End Operator
+
+    'Other methods omitted for clarity.
+End Structure
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim cpx1 As Complex = New Complex(1.0, 3.0)
+
+        'Use Widening operator.
+        Dim cpx2 As Complex = 2.0
+
+        'Use Narrowing operator.
+        Dim d As Double = cpx1
+
+        Console.WriteLine("cpx1 = {0}", cpx1)
+        Console.WriteLine("cpx2 = {0}", cpx2)
+        Console.WriteLine("d = {0}", d)
+    End Sub
+End Class

@@ -1,0 +1,112 @@
+Public Delegate Sub MyDelegate(ByVal l As Long, ByVal o As Object)
+
+Public Delegate Function Converter(Of TInput, TOutput)(ByVal input As TInput) _
+    As TOutput
+
+
+------------------------------------------------------------
+
+Shared Sub Main()
+    Dim lContainer As MyContainer(Of Long) = New MyContainer(Of Long)()
+    Dim iContainer As MyContainer(Of Integer) = New MyContainer(Of Integer)()
+
+    'Add 2 items to long container
+    lContainer.Add(1)
+    lContainer.Add(2)
+
+    'Add 2 items to integer container
+    iContainer.Add(3)
+    iContainer.Add(4)
+
+    'Convert and append integer container to long container
+    lContainer.Add(iContainer, AddressOf EntryPoint.IntToLongConverter)
+
+    For Each i As Integer In iContainer
+        Console.WriteLine("iContainer Item: {0}", i)
+    Next i
+
+    Console.WriteLine()
+
+    For Each l As Long In lContainer
+        Console.WriteLine("lContainer Item: {0}", l)
+    Next l
+End Sub
+
+------------------------------------------------------------
+
+        lContainer.Add(Of Integer)(iContainer, New Converter(Of Integer, Long) _
+            (AddressOf EntryPoint.IntToLongConverter))
+
+------------------------------------------------------------
+
+' THIS WON'T WORK AS EXPECTED!!!
+Imports System
+Imports System.Collections.Generic
+
+Public Delegate Sub MyDelegate(ByVal i As Integer)
+
+Public Class DelegateContainer(Of T)
+    Private imp As List(Of T) = New List(Of T)()
+
+    Public Sub Add(ByVal del As T)
+        imp.Add(del)
+    End Sub
+
+    Public Sub CallDelegates(ByVal k As Integer)
+        For Each del As T In imp
+            'del(k)
+        Next del
+    End Sub
+
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim delegates As DelegateContainer(Of MyDelegate) = _
+            New DelegateContainer(Of MyDelegate)()
+
+        delegates.Add(AddressOf EntryPoint.PrintInt)
+    End Sub
+
+    Private Shared Sub PrintInt(ByVal i As Integer)
+        Console.WriteLine(i)
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Collections.Generic
+
+Public Delegate Sub MyDelegate(Of T)(ByVal i As T)
+
+Public Class DelegateContainer(Of T)
+    Private imp As List(Of MyDelegate(Of T)) = New List(Of MyDelegate(Of T))()
+
+    Public Sub Add(ByVal del As MyDelegate(Of T))
+        imp.Add(del)
+    End Sub
+
+    Public Sub CallDelegates(ByVal k As T)
+        For Each del As MyDelegate(Of T) In imp
+            del(k)
+        Next del
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim delegates As DelegateContainer(Of Integer) = _
+            New DelegateContainer(Of Integer)()
+
+        delegates.Add(AddressOf EntryPoint.PrintInt)
+        delegates.CallDelegates(42)
+    End Sub
+
+    Private Shared Sub PrintInt(ByVal i As Integer)
+        Console.WriteLine(i)
+    End Sub
+End Class
+
+------------------------------------------------------------
+

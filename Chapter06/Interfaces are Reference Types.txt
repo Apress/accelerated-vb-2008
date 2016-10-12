@@ -1,0 +1,20 @@
+Public Interface IUIControl
+    Sub Paint()
+End Interface
+
+Public Class Button
+    Implements IUIControl
+
+    Public Sub Paint() Implements IUIControl.Paint
+        'Paint the Button
+    End Sub
+End Class
+
+Public Class ListBox
+    Implements IUIControl
+
+    Public Sub Paint() Implements IUIControl.Paint
+        'Paint the Listbox
+    End Sub
+End Class
+

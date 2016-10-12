@@ -1,0 +1,119 @@
+Public Interface IEnumerable(Of T)
+    Inherits IEnumerable
+
+    Overloads Function GetEnumerator() As IEnumerator(Of T)
+End Interface
+
+Public Interface IEnumerable
+    Function GetEnumerator() As IEnumerator
+End Interface
+
+------------------------------------------------------------
+
+Public Interface IEnumerator(Of T)
+    Inherits IEnumerator
+    Inherits IDisposable
+
+    Overloads ReadOnly Property Current() As T
+End Interface
+
+Public Interface IEnumerator
+    ReadOnly Property Current() As Object
+
+    Function MoveNext() As Boolean
+    Sub Reset()
+End Interface
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Threading
+Imports System.Collections
+Imports System.Collections.Generic
+
+Public Class MyColl(Of T)
+    Implements IEnumerable(Of T)
+
+    Private items As T()
+
+    Public Sub New(ByVal items As T())
+        Me.items = items
+    End Sub
+
+    Public Overloads Function GetEnumeratorOfT() As IEnumerator(Of T) _
+        Implements IEnumerable(Of T).GetEnumerator
+        Return New NestedEnumerator(Me)
+    End Function
+
+    Private Overloads Function GetEnumerator() As IEnumerator _
+        Implements IEnumerable.GetEnumerator
+        Return GetEnumerator()
+    End Function
+
+    'The enumerator definition.
+    Private Class NestedEnumerator
+        Implements IEnumerator(Of T)
+
+        Private coll As MyColl(Of T)
+        Private mCurrent As T
+        Private index As Integer
+
+        Public Sub New(ByVal coll As MyColl(Of T))
+            Monitor.Enter(coll.items.SyncRoot)
+            Me.index = -1
+            Me.coll = coll
+        End Sub
+
+        Public ReadOnly Property CurrentOfT() As T _ 
+            Implements IEnumerator(Of T).Current
+            Get
+                Return mCurrent
+            End Get
+        End Property
+
+        Private ReadOnly Property Current() As Object Implements IEnumerator.Current
+            Get
+                Return mCurrent
+            End Get
+        End Property
+
+        Public Function MoveNext() As Boolean Implements IEnumerator(Of T).MoveNext
+            Me.index += 1
+
+            If index >= coll.items.Length Then
+                Return False
+            Else
+                mCurrent = coll.items(index)
+                Return True
+            End If
+        End Function
+
+        Public Sub Reset() Implements IEnumerator(Of T).Reset
+            mCurrent = Nothing
+            index = 0
+        End Sub
+
+        Public Sub Dispose() Implements IEnumerator(Of T).Dispose
+            Try
+                mCurrent = Nothing
+                index = coll.items.Length
+            Finally
+                Monitor.Exit(coll.items.SyncRoot)
+            End Try
+        End Sub
+    End Class
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim integers As MyColl(Of Integer) =  _
+            New MyColl(Of Integer)(New Integer() {1, 2, 3, 4})
+
+        For Each n As Integer In integers
+            Console.WriteLine(n)
+        Next n
+    End Sub
+End Class
+
+------------------------------------------------------------
+

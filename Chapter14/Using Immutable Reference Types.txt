@@ -1,0 +1,80 @@
+Public Sub PrintString(ByVal theString As String)
+    'Assuming following line does not create a new 
+    'instance of String but modifies theString.
+    theString &= ": there, I printed it!"
+    Console.WriteLine(theString)
+End Sub
+
+------------------------------------------------------------
+
+Imports System
+
+Public NotInheritable Class ComplexNumber
+    Private mReal As Double
+    Private mImaginary As Double
+
+    Public Sub New(ByVal real As Double, ByVal imaginary As Double)
+        Me.mReal = real
+        Me.mImaginary = imaginary
+    End Sub
+
+    Public Property Real() As Double
+        Get
+            Return mReal
+        End Get
+
+        Set(ByVal value As Double)
+            mReal = value
+        End Set
+    End Property
+
+    Public Property Imaginary() As Double
+        Get
+            Return mImaginary
+        End Get
+
+        Set(ByVal value As Double)
+            mImaginary = value
+        End Set
+    End Property
+
+    'Other methods removed for clarity.
+End Class
+
+Public NotInheritable Class ConstComplexNumber
+    Private ReadOnly pimpl As ComplexNumber
+
+    Public Sub New(ByVal pimpl As ComplexNumber)
+        Me.pimpl = pimpl
+    End Sub
+
+    Public ReadOnly Property Real() As Double
+        Get
+            Return pimpl.Real
+        End Get
+    End Property
+
+    Public ReadOnly Property Imaginary() As Double
+        Get
+            Return pimpl.Imaginary
+        End Get
+    End Property
+End Class
+
+Public NotInheritable Class EntryPoint
+    Shared Sub Main()
+        Dim someNumber As ComplexNumber = New ComplexNumber(1, 2)
+
+        SomeMethod(New ConstComplexNumber(someNumber))
+
+        'We are guaranteed by the contract of ConstComplexNumber that
+        'someNumber has not been changed at this point.
+    End Sub
+
+    Private Shared Sub SomeMethod(ByVal number As ConstComplexNumber)
+        Console.WriteLine("( {0}, {1} )", number.Real, number.Imaginary)
+    End Sub
+End Class
+
+------------------------------------------------------------
+

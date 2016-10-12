@@ -1,0 +1,40 @@
+Imports System
+Imports System.Collections
+
+Public Delegate Function SortStrategy(ByVal theCollection As ICollection) As Array
+
+Public Class Consumer
+    Private myCollection As ArrayList
+    Private mStrategy As SortStrategy
+
+    Public Sub New(ByVal defaultStrategy As SortStrategy)
+        Me.mStrategy = defaultStrategy
+    End Sub
+
+    Public Property Strategy() As SortStrategy
+        Get
+            Return mStrategy
+        End Get
+        Set(ByVal value As SortStrategy)
+            mStrategy = value
+        End Set
+    End Property
+
+    Public Sub DoSomeWork()
+        'Employ the strategy.
+        Dim sorted As Array = mStrategy(myCollection)
+
+        'Do something with the results.
+    End Sub
+
+End Class
+
+Public Class SortAlgorithms
+    Private Shared Function SortFast(ByVal theCollection As ICollection) As Array
+        'Do the fast sort.
+    End Function
+
+    Private Shared Function SortSlow(ByVal theCollection As ICollection) As Array
+        'Do the slow sort.
+    End Function
+End Class

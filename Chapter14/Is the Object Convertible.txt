@@ -1,0 +1,31 @@
+Shared Sub Main()
+    Dim d As Double = 12.1
+    Dim str As String = Convert.ToString(d)
+End Sub
+
+------------------------------------------------------------
+
+Imports System
+
+Public NotInheritable Class ComplexNumber
+    Public Sub New(ByVal real As Double, ByVal imaginary As Double)
+        Me.real = real
+        Me.imaginary = imaginary
+    End Sub
+
+    ' Other methods removed for clarity.
+
+    Private ReadOnly real As Double
+    Private ReadOnly imaginary As Double
+End Class
+
+Public NotInheritable Class EntryPoint
+    Shared Sub Main()
+        Dim num1 As ComplexNumber = New ComplexNumber(1.12345678, 2.12345678)
+
+        Dim str As String = CStr(Convert.ChangeType(num1, GetType(String)))
+    End Sub
+End Class
+
+------------------------------------------------------------
+

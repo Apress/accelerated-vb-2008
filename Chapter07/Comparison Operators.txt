@@ -1,0 +1,247 @@
+Imports System
+
+Public Structure Complex
+    Implements IComparable
+    Implements IEquatable(Of Complex)
+    Implements IComparable(Of Complex)
+
+    Private Real As Double
+    Private Img As Double
+
+    Public Sub New(ByVal real As Double, ByVal img As Double)
+        Me.Real = real
+        Me.Img = img
+    End Sub
+
+    'System.Object override
+    Public Overrides Function Equals(ByVal other As Object) As Boolean
+        Dim result As Boolean = False
+
+        If TypeOf other Is Complex Then
+            result = Equals(DirectCast(other, Complex))
+        End If
+
+        Return result
+    End Function
+
+    'Typesafe version
+    Public Overloads Function Equals(ByVal that As Complex) As Boolean _
+        Implements IEquatable(Of Complex).Equals
+
+        Return (Me.Real = that.Real AndAlso Me.Img = that.Img)
+    End Function
+
+    'Must override if overriding Object.Equals()
+    Public Overrides Function GetHashCode() As Integer
+        Return CType(Me.Magnitude, Integer)
+    End Function
+
+    'Typesafe version
+    Public Function CompareTo(ByVal that As Complex) As Integer _
+        Implements IComparable(Of Complex).CompareTo
+
+        Dim result As Integer
+
+        If Equals(that) Then
+            result = 0
+        ElseIf Me.Magnitude > that.Magnitude Then
+            result = 1
+        Else
+            result = -1
+        End If
+
+        Return result
+    End Function
+
+    'IComparable implementation
+    Function CompareTo(ByVal other As Object) As Integer _
+        Implements IComparable.CompareTo
+
+        If Not (TypeOf other Is Complex) Then
+            Throw New ArgumentException("Bad Comparison")
+        End If
+
+        Return CompareTo(DirectCast(other, Complex))
+    End Function
+
+    'System.Object override
+    Public Overrides Function ToString() As String
+        Return System.String.Format("({0}, {1})", Real, Img)
+    End Function
+
+    Public ReadOnly Property Magnitude() As Double
+        Get
+            Return Math.Sqrt(Math.Pow(Me.Real, 2) + Math.Pow(Me.Img, 2))
+        End Get
+    End Property
+
+    'Overloaded operators
+    Public Shared Operator =(ByVal lhs As Complex, ByVal rhs As Complex) As Boolean
+        Return lhs.Equals(rhs)
+    End Operator
+
+    Public Shared Operator <>(ByVal lhs As Complex, ByVal rhs As Complex) _
+        As Boolean
+
+        Return Not lhs.Equals(rhs)
+    End Operator
+
+    Public Shared Operator <(ByVal lhs As Complex, ByVal rhs As Complex) As Boolean
+        Return lhs.CompareTo(rhs) < 0
+    End Operator
+
+    Public Shared Operator >(ByVal lhs As Complex, ByVal rhs As Complex) As Boolean
+        Return lhs.CompareTo(rhs) > 0
+    End Operator
+
+    Public Shared Operator <=(ByVal lhs As Complex, ByVal rhs As Complex) _
+        As Boolean
+
+        Return lhs.CompareTo(rhs) <= 0
+    End Operator
+
+    Public Shared Operator >=(ByVal lhs As Complex, ByVal rhs As Complex) _
+        As Boolean
+
+        Return lhs.CompareTo(rhs) >= 0
+    End Operator
+
+    'Other methods omitted for clarity.
+End Structure
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim cpx1 As Complex = New Complex(1, 3)
+        Dim cpx2 As Complex = New Complex(1, 2)
+
+        Console.WriteLine("cpx1 = {0}, cpx1.Magnitude = {1}", cpx1, cpx1.Magnitude)
+        Console.WriteLine("cpx2 = {0}, cpx2.Magnitude = {1}" _
+            & Chr(10) & "", cpx2, cpx2.Magnitude)
+
+        Console.WriteLine("cpx1 == cpx2 ? {0}", cpx1 = cpx2)
+        Console.WriteLine("cpx1 != cpx2 ? {0}", cpx1 <> cpx2)
+        Console.WriteLine("cpx1 <  cpx2 ? {0}", cpx1 < cpx2)
+        Console.WriteLine("cpx1 >  cpx2 ? {0}", cpx1 > cpx2)
+        Console.WriteLine("cpx1 <= cpx2 ? {0}", cpx1 <= cpx2)
+        Console.WriteLine("cpx1 >= cpx2 ? {0}", cpx1 >= cpx2)
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Option Strict Off
+
+Imports System
+
+Public Structure Complex
+    Private Real As Double
+    Private Imaginary As Double
+
+    Public Sub New(ByVal real As Double, ByVal imaginary As Double)
+        Me.Real = real
+        Me.Imaginary = imaginary
+    End Sub
+
+    'System.Object override
+    Public Overrides Function ToString() As String
+        Return System.String.Format("({0}, {1})", Real, Imaginary)
+    End Function
+
+    Public ReadOnly Property Magnitude() As Double
+        Get
+            Return Math.Sqrt(Math.Pow(Me.Real, 2) + Math.Pow(Me.Imaginary, 2))
+        End Get
+    End Property
+
+    Public Shared Operator IsTrue(ByVal c As Complex) As Boolean
+        Return (c.Real <> 0) OrElse (c.Imaginary <> 0)
+    End Operator
+
+    Public Shared Operator IsFalse(ByVal c As Complex) As Boolean
+        Return (c.Real = 0) AndAlso (c.Imaginary = 0)
+    End Operator
+
+    Public Shared Widening Operator CType(ByVal d As Double) As Complex
+        Return New Complex(d, 0)
+    End Operator
+
+    Public Shared Narrowing Operator CType(ByVal c As Complex) As Double
+        Return c.Magnitude
+    End Operator
+
+    'Other methods omitted for clarity.
+End Structure
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim cpx1 As Complex = New Complex(1.0, 3.0)
+
+        If cpx1 Then
+            Console.WriteLine("cpx1 is True")
+        Else
+            Console.WriteLine("cpx1 is False")
+        End If
+
+        Dim cpx2 As Complex = New Complex(0.0, 0.0)
+
+        Console.WriteLine("cpx2 is {0}", IIf(cpx2, "True", "False"))
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Public Structure Complex
+    Private Real As Double
+    Private Imaginary As Double
+
+    Public Sub New(ByVal real As Double, ByVal imaginary As Double)
+        Me.Real = real
+        Me.Imaginary = imaginary
+    End Sub
+
+    'System.Object override
+    Public Overrides Function ToString() As String
+        Return System.String.Format("({0}, {1})", Real, Imaginary)
+    End Function
+
+    Public ReadOnly Property Magnitude() As Double
+        Get
+            Return Math.Sqrt(Math.Pow(Me.Real, 2) + Math.Pow(Me.Imaginary, 2))
+        End Get
+    End Property
+
+    Public Shared Widening Operator CType(ByVal c As Complex) As Boolean
+        Return (c.Real <> 0) OrElse (c.Imaginary <> 0)
+    End Operator
+
+    Public Shared Widening Operator CType(ByVal d As Double) As Complex
+        Return New Complex(d, 0)
+    End Operator
+
+    Public Shared Narrowing Operator CType(ByVal c As Complex) As Double
+        Return c.Magnitude
+    End Operator
+
+    'Other methods omitted for clarity.
+End Structure
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim cpx1 As Complex = New Complex(1.0, 3.0)
+
+        If cpx1 Then
+            Console.WriteLine("cpx1 is True")
+        Else
+            Console.WriteLine("cpx1 is False")
+        End If
+
+        Dim cpx2 As Complex = New Complex(0.0, 0.0)
+
+        Console.WriteLine("cpx2 is {0}", IIf(cpx2, "True", "False"))
+    End Sub
+End Class
+
+------------------------------------------------------------
+

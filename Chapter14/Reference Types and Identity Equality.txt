@@ -1,0 +1,77 @@
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim referenceA As Object = New System.Object()
+        Dim referenceB As Object = referenceA
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Public Class EntryPoint
+    Private Shared Function TestForEquality(ByVal obj1 As Object, _
+        ByVal obj2 As Object) As Boolean
+
+        Return obj1.Equals(obj2)
+    End Function
+
+    Shared Sub Main()
+        Dim obj1 As Object = New System.Object()
+        Dim obj2 As Object = Nothing
+
+        System.Console.WriteLine("obj1 Equals obj2 is {0}", _
+            TestForEquality(obj1, obj2))
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Public Class EntryPoint
+    Private Shared Function TestForEquality(ByVal obj1 As Object, _
+        ByVal obj2 As Object) As Boolean
+
+        If obj1 Is Nothing AndAlso obj2 Is Nothing Then
+            Return True
+        End If
+
+        If obj1 Is Nothing Then
+            Return False
+        End If
+
+        Return obj1.Equals(obj2)
+    End Function
+
+    Shared Sub Main()
+        Dim obj1 As Object = New System.Object()
+        Dim obj2 As Object = Nothing
+
+        System.Console.WriteLine("obj1 Equals obj2 is {0}", _
+            TestForEquality(obj2, obj1))
+        System.Console.WriteLine("Nothing Equals Nothing is {0}", _
+            TestForEquality(Nothing, Nothing))
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Public Class ComplexNumber
+    Public Sub New(ByVal real As Integer, ByVal imaginary As Integer)
+        Me.real = real
+        Me.imaginary = imaginary
+    End Sub
+
+    Private real As Integer
+    Private imaginary As Integer
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim referenceA As ComplexNumber = New ComplexNumber(1, 2)
+        Dim referenceB As ComplexNumber = New ComplexNumber(1, 2)
+
+        System.Console.WriteLine("Result of Equality is {0}", _
+            referenceA Is referenceB)
+    End Sub
+End Class
+
+------------------------------------------------------------
+

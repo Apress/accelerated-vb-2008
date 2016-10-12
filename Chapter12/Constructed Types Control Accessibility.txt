@@ -1,0 +1,10 @@
+Public Class Outer
+    Private Class Nested
+    End Class
+
+    Public Class GenericNested(Of T)
+    End Class
+
+    Private field1 As GenericNested(Of Nested)
+    Public field2 As GenericNested(Of Nested) ' Ooops!
+End Class

@@ -1,0 +1,146 @@
+For Each emp As Employee In Employees
+    'Do Something
+Next emp
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Collections
+
+Public Class Employee
+    Public Sub Evaluate()
+        Console.WriteLine("Evaluating Employee . . .")
+    End Sub
+End Class
+
+Public Class WorkForceEnumerator
+    Implements IEnumerator
+
+    Private enumerator As IEnumerator
+
+    Public Sub New(ByVal employees As ArrayList)
+        Me.enumerator = employees.GetEnumerator()
+    End Sub
+
+    Public ReadOnly Property Current() As Employee
+        Get
+            Return CType(enumerator.Current, Employee)
+        End Get
+    End Property
+
+    Private ReadOnly Property IEnumerator_Current() As Object _
+        Implements IEnumerator.Current
+
+        Get
+            Return enumerator.Current
+        End Get
+    End Property
+
+    Public Function MoveNext() As Boolean Implements IEnumerator.MoveNext
+        Return enumerator.MoveNext()
+    End Function
+
+    Public Sub Reset() Implements IEnumerator.Reset
+        enumerator.Reset()
+    End Sub
+End Class
+
+Public Class WorkForce
+    Implements IEnumerable
+
+    Private employees As ArrayList
+
+    Public Sub New()
+        employees = New ArrayList()
+
+        'Let's put an employee in here for demo purposes.
+        employees.Add(New Employee())
+    End Sub
+
+    Public Overloads Function GetEnumerator() As WorkForceEnumerator
+        Return New WorkForceEnumerator(employees)
+    End Function
+
+    Private Overloads Function IEnumerable_GetEnumerator() As IEnumerator _
+        Implements IEnumerable.GetEnumerator
+
+        Return New WorkForceEnumerator(employees)
+    End Function
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim staff As WorkForce = New WorkForce()
+
+        For Each emp As Employee In staff
+            emp.Evaluate()
+        Next emp
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Collections
+
+Public Class Employee
+    Public Sub Evaluate()
+        Console.WriteLine("Evaluating Employee . . .")
+    End Sub
+End Class
+
+Public Class WorkForceEnumerator
+    Implements IEnumerator
+
+    Private enumerator As IEnumerator
+
+    Public Sub New(ByVal employees As ArrayList)
+        Me.enumerator = employees.GetEnumerator()
+    End Sub
+
+    Public ReadOnly Property Current() As Object Implements IEnumerator.Current
+        Get
+            Return enumerator.Current
+        End Get
+    End Property
+
+    Public Function MoveNext() As Boolean Implements IEnumerator.MoveNext
+        Return enumerator.MoveNext()
+    End Function
+
+    Public Sub Reset() Implements IEnumerator.Reset
+        enumerator.Reset()
+    End Sub
+End Class
+
+Public Class WorkForce
+    Implements IEnumerable
+
+    Private employees As ArrayList
+
+    Public Sub New()
+        employees = New ArrayList()
+
+        'Let's add an employee in here for demo purposes.
+        employees.Add(New Employee())
+    End Sub
+
+    Public Function GetEnumerator() As IEnumerator _
+        Implements IEnumerable.GetEnumerator
+
+        Return New WorkForceEnumerator(employees)
+    End Function
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim staff As WorkForce = New WorkForce()
+
+        For Each emp As Employee In staff
+            emp.Evaluate()
+        Next emp
+    End Sub
+End Class
+
+------------------------------------------------------------
+

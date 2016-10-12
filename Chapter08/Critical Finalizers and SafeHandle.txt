@@ -1,0 +1,100 @@
+Imports System
+Imports System.Runtime.InteropServices
+Imports System.Runtime.ConstrainedExecution
+Imports System.Security
+Imports System.Security.Permissions
+Imports System.Text
+Imports Microsoft.Win32.SafeHandles
+
+'Matches Win32 BLUETOOTH_FIND_RADIO_PARAMS
+<StructLayout(LayoutKind.Sequential)> _
+Class BluetoothFindRadioParams
+    Public dwSize As UInteger
+
+    Public Sub New()
+        dwSize = 4
+    End Sub
+End Class
+
+'Matches Win32 BLUETOOTH_RADIO_INFO
+<StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode)> _
+Structure BluetoothRadioInfo
+    Public Const BLUETOOTH_MAX_NAME_SIZE As Integer = 248
+    Public dwSize As UInteger
+    Public address As ULong
+
+    <MarshalAs(UnmanagedType.ByValTStr, SizeConst:=BLUETOOTH_MAX_NAME_SIZE)> _
+    Public szName As String
+    Public ulClassOfDevice As UInteger
+    Public lmpSubversion As ULong
+    Public manufacturer As UShort
+End Structure
+
+'Safe Bluetooth Enumeration handle
+<SecurityPermission(SecurityAction.Demand, UnmanagedCode:=True)> _
+Public NotInheritable Class SafeBluetoothRadioFindHandle
+    Inherits SafeHandleZeroOrMinusOneIsInvalid
+
+    Private Sub New()
+        MyBase.New(True)
+    End Sub
+
+    Protected Overrides Function ReleaseHandle() As Boolean
+        Return BluetoothFindRadioClose(handle)
+    End Function
+
+    <DllImport("Irprops.cpl")> _
+    <ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)> _
+    <SuppressUnmanagedCodeSecurity()> _
+    Private Shared Function BluetoothFindRadioClose(ByVal hFind As IntPtr) _
+        As Boolean
+    End Function
+End Class
+
+Public Class EntryPoint
+    Private Const ERROR_SUCCESS As Integer = 0
+
+    Shared Sub Main()
+        Dim PreexistingHandle As IntPtr
+        Dim OwnsHandle As Boolean = True
+        Dim RadioHandle As SafeFileHandle = _
+        New SafeFileHandle(PreexistingHandle, OwnsHandle)
+
+        Using radioFindHandle As SafeBluetoothRadioFindHandle = _
+        BluetoothFindFirstRadio(New BluetoothFindRadioParams(), RadioHandle)
+            If Not radioFindHandle.IsInvalid Then
+                Dim radioInfo As BluetoothRadioInfo = New BluetoothRadioInfo()
+                radioInfo.dwSize = 520
+                Dim result As UInteger = BluetoothGetRadioInfo(RadioHandle, _
+                    radioInfo)
+
+                If result = ERROR_SUCCESS Then
+                    'Let's send the contents of the radio info to the console.
+                    Console.WriteLine("address = {0:X}", radioInfo.address)
+                    Console.WriteLine("szName = {0}", radioInfo.szName)
+                    Console.WriteLine("ulClassOfDevice = {0}", _
+                        radioInfo.ulClassOfDevice)
+                    Console.WriteLine("lmpSubversion = {0}", _
+                        radioInfo.lmpSubversion)
+                    Console.WriteLine("manufacturer = {0}", radioInfo.manufacturer)
+                End If
+                RadioHandle.Dispose()
+            End If
+        End Using
+    End Sub
+
+    <DllImport("Irprops.cpl")> _
+    Private Shared Function _
+        BluetoothFindFirstRadio(<MarshalAs(UnmanagedType.LPStruct)> _
+        ByVal pbtfrp As BluetoothFindRadioParams, ByRef phRadio As SafeFileHandle) _
+        As SafeBluetoothRadioFindHandle
+    End Function
+
+    <DllImport("Irprops.cpl")> _
+    Private Shared Function BluetoothGetRadioInfo(ByVal hRadio As SafeFileHandle, _
+    ByRef pRadioInfo As BluetoothRadioInfo) As UInteger
+    End Function
+End Class
+
+------------------------------------------------------------
+

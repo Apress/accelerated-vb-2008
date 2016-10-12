@@ -1,0 +1,102 @@
+Public Interface IDisposable
+    Sub Dispose()
+End Interface
+
+------------------------------------------------------------
+
+Imports System
+
+Public Class A
+    Implements IDisposable
+
+    Private Disposed As Boolean = False
+
+    Public Sub Dispose(ByVal Disposing As Boolean)
+        If Not Disposed Then
+            If Disposing Then
+                'It is safe to access other objects here.
+            End If
+
+            Console.WriteLine("Cleaning up object")
+            Disposed = True
+        End If
+    End Sub
+
+    Public Sub Dispose() Implements System.IDisposable.Dispose
+        Dispose(True)
+        GC.SuppressFinalize(Me)
+    End Sub
+
+    Public Sub DoSomething()
+        Console.WriteLine("A.DoSomething()")
+    End Sub
+
+    Protected Overrides Sub Finalize()
+        Console.WriteLine("Finalizing")
+        Dispose(False)
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim objA As A = New A
+
+        Try
+            objA.DoSomething()
+        Finally
+            objA.Dispose()
+        End Try
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Public Class A
+    Implements IDisposable
+
+    Private Disposed As Boolean = False
+
+    Public Sub Dispose(ByVal Disposing As Boolean)
+        If Not Disposed Then
+            If Disposing Then
+                'It is safe to access other objects here.
+            End If
+
+            Console.WriteLine("Cleaning up object")
+            Disposed = True
+        End If
+    End Sub
+
+    Public Sub Dispose() Implements System.IDisposable.Dispose
+        Dispose(True)
+        GC.SuppressFinalize(Me)
+    End Sub
+
+    Public Sub DoSomething()
+        Console.WriteLine("A.DoSomething()")
+    End Sub
+
+    Protected Overrides Sub Finalize()
+        Console.WriteLine("Finalizing")
+        Dispose(False)
+    End Sub
+
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Using objA As A = New A()
+            objA.DoSomething()
+        End Using
+
+        Using objA As A = New A(), b As A = New A()
+            objA.DoSomething()
+            b.DoSomething()
+        End Using
+    End Sub
+End Class
+
+------------------------------------------------------------
+

@@ -1,0 +1,112 @@
+Sub ExceptionNeutralMethod()
+      ' All code that could possibly throw exceptions is in this
+      ' first section. In this section, no changes in state are
+      ' applied to any objects in the system including this.
+
+      ' All changes are committed at this point using operations
+      ' strictly guaranteed not to throw exceptions.
+End Sub
+
+------------------------------------------------------------
+
+Imports System.Collections
+
+Class EmployeeDatabase
+    Private ActiveEmployees As ArrayList
+    Private TerminatedEmployees As ArrayList
+End Class
+
+------------------------------------------------------------
+
+Imports System.Collections
+
+Class Employee
+End Class
+
+Class EmployeeDatabase
+    Private ActiveEmployees As ArrayList
+    Private TerminatedEmployees As ArrayList
+
+    Public Sub TerminateEmployee(ByVal index As Integer)
+        Dim employee As Object = ActiveEmployees(index)
+
+        ActiveEmployees.RemoveAt(index)
+        TerminatedEmployees.Add(employee)
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System.Collections
+
+Class Employee
+End Class
+
+Class EmployeeDatabase
+    Private ActiveEmployees As ArrayList
+    Private TerminatedEmployees As ArrayList
+
+    Public Sub TerminateEmployee(ByVal index As Integer)
+        Dim employee As Object = Nothing
+
+        Try
+            employee = ActiveEmployees(index)
+        Catch
+        'Oops!  We must be out of range here.
+        End Try
+
+        If employee <> Nothing Then
+            ActiveEmployees.RemoveAt(index)
+            Try
+                TerminatedEmployees.Add(employee)
+            Catch
+                'Allocation may have failed.
+                ActiveEmployees.Add(employee)
+            End Try
+        End If
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System.Collections
+
+Class Employee
+End Class
+
+Class EmployeeDatabase
+    Private activeEmployees As ArrayList
+    Private terminatedEmployees As ArrayList
+
+    Public Sub TerminateEmployee(ByVal index As Integer)
+        'Clone-sensitive objects.
+        Dim tempActiveEmployees As ArrayList = _
+        DirectCast(activeEmployees.Clone(), ArrayList)
+
+        Dim tempTerminatedEmployees As ArrayList = _
+        DirectCast(terminatedEmployees.Clone(), ArrayList)
+
+        'Perform actions on our temp objects.
+        Dim employee As Object = tempActiveEmployees(index)
+
+        tempActiveEmployees.RemoveAt(index)
+        tempTerminatedEmployees.Add(employee)
+
+        'Now, commit the changes.
+        Dim tempSpace As ArrayList = Nothing
+
+        ListSwap(activeEmployees, tempActiveEmployees, tempSpace)
+        ListSwap(terminatedEmployees, tempTerminatedEmployees, tempSpace)
+    End Sub
+
+    Sub ListSwap(ByRef first As ArrayList, ByRef second As ArrayList, _
+        ByRef temp As ArrayList)
+        temp = first
+        first = second
+        second = temp
+        temp = Nothing
+    End Sub
+End Class
+
+------------------------------------------------------------
+

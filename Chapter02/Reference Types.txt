@@ -1,0 +1,10 @@
+Public Class Coordinate
+        Dim x As Integer
+        Dim y As Integer
+End Class
+. . . 
+Dim Point1 As Coordinate = New Coordinate
+Dim Point2 As Coordinate = Point1
+
+------------------------------------------------------------
+

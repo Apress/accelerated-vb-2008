@@ -1,0 +1,111 @@
+Public Sub Main()
+    Dim num1 As ComplexNumber = New ComplexNumber(1, 3)
+    Dim num2 As ComplexNumber = New ComplexNumber(1, 2)
+
+    Dim result As Integer = (CType(num1, IComparable)).CompareTo(num2)
+End Sub
+
+------------------------------------------------------------
+
+Imports System
+
+Public Structure ComplexNumber
+    Implements IComparable
+    Implements IComparable(Of ComplexNumber)
+    Implements IEquatable(Of ComplexNumber)
+
+    Private ReadOnly real As Double
+    Private ReadOnly imaginary As Double
+
+    Public Sub New(ByVal real As Double, ByVal imaginary As Double)
+        Me.real = real
+        Me.imaginary = imaginary
+    End Sub
+
+    Public Overloads Function Equals(ByVal other As ComplexNumber) As Boolean
+        Return (Me.real = other.real) AndAlso (Me.imaginary = other.imaginary)
+    End Function
+
+    Public Overloads Overrides Function Equals(ByVal other As Object) As Boolean
+        Dim result As Boolean = False
+
+        If TypeOf other Is ComplexNumber Then
+            Dim that As ComplexNumber = CType(other, ComplexNumber)
+
+            result = Equals(that)
+        End If
+
+        Return result
+    End Function
+
+    Public Function IEquatableOfT_Equals(ByVal other As ComplexNumber) As Boolean _
+        Implements System.IEquatable(Of ComplexNumber).Equals
+    End Function
+
+    Public Overrides Function GetHashCode() As Integer
+        Return CInt(Fix(Me.Magnitude))
+    End Function
+
+    Public Shared Operator =(ByVal num1 As ComplexNumber, _
+        ByVal num2 As ComplexNumber) As Boolean
+
+        Return num1.Equals(num2)
+    End Operator
+
+    Public Shared Operator <>(ByVal num1 As ComplexNumber, _
+        ByVal num2 As ComplexNumber) As Boolean
+
+        Return Not num1.Equals(num2)
+    End Operator
+
+    Public Function CompareTo(ByVal that As ComplexNumber) As Integer
+        Dim result As Integer
+
+        If Equals(that) Then
+            result = 0
+        ElseIf Me.Magnitude > that.Magnitude Then
+            result = 1
+        Else
+            result = -1
+        End If
+
+        Return result
+    End Function
+
+    Private Function CompareTo(ByVal other As Object) As Integer _
+        Implements IComparable.CompareTo
+
+        If Not (TypeOf other Is ComplexNumber) Then
+            Throw New ArgumentException("Bad Comparison!")
+        End If
+
+        Return CompareTo(CType(other, ComplexNumber))
+    End Function
+
+    Public Function IComparableOfT_CompareTo(ByVal other As ComplexNumber) _
+        As Integer Implements System.IComparable(Of ComplexNumber).CompareTo
+    End Function
+
+    Public ReadOnly Property Magnitude() As Double
+        Get
+            Return Math.Sqrt(Math.Pow(Me.real, 2) + Math.Pow(Me.imaginary, 2))
+        End Get
+    End Property
+
+    'Other methods removed for clarity.
+End Structure
+
+Public NotInheritable Class EntryPoint
+    Shared Sub Main()
+        Dim num1 As ComplexNumber = New ComplexNumber(1, 3)
+        Dim num2 As ComplexNumber = New ComplexNumber(1, 2)
+
+        Dim result As Integer = num1.CompareTo(num2)
+
+        'Now, try the type-generic version
+        result = (CType(num1, IComparable)).CompareTo(num2)
+    End Sub
+End Class
+
+------------------------------------------------------------
+

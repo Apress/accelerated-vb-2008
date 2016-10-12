@@ -1,0 +1,91 @@
+﻿Imports System
+Imports System.Text.RegularExpressions
+
+Public Class EntryPoint
+    Shared Sub Main(ByVal args As String())
+        If args.Length < 1 Then
+            Console.WriteLine("You must provide a string.")
+            Return
+        End If
+
+        Dim pattern As String = "([01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "([01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "([01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "([01]?\d\d?|2[0-4]\d|25[0-5])"
+
+        Dim regex As Regex = New Regex(pattern)
+
+        Console.WriteLine("Input given --> {0}", regex.Replace(args(0), _
+            "xxx.xxx.xxx.xxx"))
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Text
+Imports System.Text.RegularExpressions
+
+Public Class EntryPoint
+    Shared Sub Main(ByVal args As String())
+        If args.Length < 1 Then
+            Console.WriteLine("You must provide a string.")
+            Return
+        End If
+
+        Dim pattern As String = "(?<part1>[01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "(?<part2>[01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "(?<part3>[01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "(?<part4>[01]?\d\d?|2[0-4]\d|25[0-5])"
+
+        Dim regex As Regex = New Regex(pattern)
+        Dim match As Match = regex.Match(args(0))
+
+        Dim eval As MatchEvaluator = _
+            New MatchEvaluator(AddressOf EntryPoint.IPReverse)
+
+        Console.WriteLine(regex.Replace(args(0), eval))
+    End Sub
+
+    Shared Function IPReverse(ByVal match As Match) As String
+        Dim sb As StringBuilder = New StringBuilder()
+
+        sb.Append(match.Groups("part4").ToString & ".")
+        sb.Append(match.Groups("part3").ToString & ".")
+        sb.Append(match.Groups("part2").ToString & ".")
+        sb.Append(match.Groups("part1"))
+
+        Return sb.ToString()
+    End Function
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Text
+Imports System.Text.RegularExpressions
+
+Public Class EntryPoint
+    Shared Sub Main(ByVal args As String())
+        If args.Length < 1 Then
+            Console.WriteLine("You must provide a string.")
+            Return
+        End If
+
+        Dim pattern As String = "(?<part1>[01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "(?<part2>[01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "(?<part3>[01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "(?<part4>[01]?\d\d?|2[0-4]\d|25[0-5])"
+
+        Dim regex As Regex = New Regex(pattern)
+        Dim match As Match = regex.Match(args(0))
+
+        Dim replace As String = _
+            "${part4}.${part3}.${part2}.${part1} (the reverse of $&)"
+
+        Console.WriteLine(regex.Replace(args(0), replace))
+    End Sub
+End Class
+
+------------------------------------------------------------
+

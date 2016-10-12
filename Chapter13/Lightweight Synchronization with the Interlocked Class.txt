@@ -1,0 +1,130 @@
+Imports System
+Imports System.Threading
+
+Public Class EntryPoint
+    Private Shared numberThreads As Integer = 0
+    Private Shared rnd As Random = New Random()
+
+    Private Shared Sub RndThreadFunc()
+        'Manage thread count and wait for a random amount of time
+        'between (1 and 12) seconds.
+        Interlocked.Increment(numberThreads)
+
+        Try
+            Dim time As Integer = rnd.Next(1000, 12000)
+            Thread.Sleep(time)
+        Finally
+            Interlocked.Decrement(numberThreads)
+        End Try
+    End Sub
+
+    Private Shared Sub RptThreadFunc()
+        Do While True
+            Dim threadCount As Integer = 0
+            threadCount = _
+                Interlocked.Exchange(numberThreads, numberThreads)
+            Console.WriteLine("{0} thread(s) alive", threadCount)
+            Thread.Sleep(1000)
+        Loop
+    End Sub
+
+    Shared Sub Main()
+        'Start the reporting threads.
+        Dim reporter As Thread = _ 
+            New Thread(AddressOf EntryPoint.RptThreadFunc)
+
+        reporter.IsBackground = True
+        reporter.Start()
+
+        'Start the threads that wait random time.
+        Dim rndthreads As Thread() = New Thread(49) {}
+
+        For i As UInteger = 0 To 49
+            rndthreads(i) = _ 
+                New Thread(AddressOf EntryPoint.RndThreadFunc)
+            rndthreads(i).Start()
+        Next i
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.IO
+Imports System.Threading
+
+Public Class SpinLock
+    Private theLock As Integer = 0
+    Private spinWait As Integer
+
+    Public Sub New(ByVal spinWait As Integer)
+        Me.spinWait = spinWait
+    End Sub
+
+    Public Sub Enter()
+        Do While Interlocked.CompareExchange(theLock, 1, 0) = 1
+            'The lock is taken, spin.
+            Thread.Sleep(spinWait)
+        Loop
+    End Sub
+
+    Public Sub [Exit]()
+        'Reset the lock.
+        Interlocked.Exchange(theLock, 0)
+    End Sub
+End Class
+
+Public Class SpinLockManager
+    Implements IDisposable
+
+    Private spinLock As SpinLock
+
+    Public Sub New(ByVal spinLock As SpinLock)
+        Me.spinLock = spinLock
+        spinLock.Enter()
+    End Sub
+
+    Public Sub Dispose() Implements IDisposable.Dispose
+        spinLock.Exit()
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Private Shared rnd As Random = New Random()
+    Private Shared logLock As SpinLock = New SpinLock(10)
+
+    Private Shared fsLog As StreamWriter = _
+        New StreamWriter(File.Open("log.txt", FileMode.Append, _
+        FileAccess.Write, FileShare.None))
+
+    Private Shared Sub RndThreadFunc()
+        Using TempSpinLockManager As SpinLockManager = _
+            New SpinLockManager(logLock)
+            fsLog.WriteLine("Thread Starting")
+            fsLog.Flush()
+        End Using
+
+        Dim time As Integer = rnd.Next(10, 200)
+        Thread.Sleep(time)
+
+        Using TempSpinLockManager As SpinLockManager = _
+            New SpinLockManager(logLock)
+            fsLog.WriteLine("Thread Exiting")
+            fsLog.Flush()
+        End Using
+    End Sub
+
+    Shared Sub Main()
+        'Start the threads that wait random time.
+        Dim rndthreads As Thread() = New Thread(49) {}
+
+        For i As UInteger = 0 To 49
+            rndthreads(i) = _
+                New Thread(AddressOf EntryPoint.RndThreadFunc)
+            rndthreads(i).Start()
+        Next i
+    End Sub
+End Class
+
+------------------------------------------------------------
+

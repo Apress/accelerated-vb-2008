@@ -1,0 +1,98 @@
+Imports System
+Imports System.Collections
+Imports System.Runtime.Serialization
+
+Public Class Employee
+    Private mEmployeeSSN As String
+    Private mEmployeeBirthDate As Date
+
+    Public Sub New()
+        MyBase.New()
+    End Sub
+
+    Public Sub Add(ByVal anSSN As String, ByVal aBirthDate As Date)
+        Me.EmployeeBirthDate = aBirthDate
+        Me.EmployeeSSN = anSSN
+    End Sub
+
+    Public Property EmployeeSSN() As String
+        Get
+            Return mEmployeeSSN
+        End Get
+        Set(ByVal value As String)
+            If value.Length = 9 Then
+                mEmployeeSSN = value
+            Else
+                Throw New EmployeeVerificationException( _
+                EmployeeVerificationException.Cause.InvalidSSN, _
+                "Social Security Number must be 9 digits.")
+            End If
+        End Set
+    End Property
+
+    Public Property EmployeeBirthDate() As Date
+        Get
+            Return mEmployeeBirthDate
+        End Get
+        Set(ByVal value As Date)
+            mEmployeeBirthDate = value
+        End Set
+    End Property
+End Class
+
+<Serializable()> _
+Public Class EmployeeVerificationException
+    Inherits Exception
+
+    Private mReason As Cause
+
+    Public Enum Cause
+        InvalidSSN
+        InvalidBirthDate
+    End Enum
+
+    Public Sub New(ByVal reason As Cause)
+        MyBase.New()
+        Me.mReason = reason
+    End Sub
+
+    Public Sub New(ByVal reason As Cause, ByVal msg As String)
+        MyBase.New(msg)
+        Me.mReason = reason
+    End Sub
+
+    Public Sub New(ByVal reason As Cause, ByVal msg As String, _
+        ByVal inner As Exception)
+        MyBase.New(msg, inner)
+        Me.mReason = reason
+    End Sub
+
+    Protected Sub New(ByVal info As SerializationInfo, _
+        ByVal context As StreamingContext)
+        MyBase.New(info, context)
+    End Sub
+
+    Public ReadOnly Property Reason() As Cause
+        Get
+            Return mReason
+        End Get
+    End Property
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim anEmployeeSSN As String = New String("12345678")
+        Dim anEmployeeBD As Date = New Date(1959, 3, 12)
+        Dim anEmployee As Employee = New Employee()
+
+        Try
+            anEmployee.Add(anEmployeeSSN, anEmployeeBD)
+        Catch e As EmployeeVerificationException
+            Console.WriteLine(e.Message & vbCrLf & "Reason Code: " & _
+                CStr(e.Reason))
+        End Try
+    End Sub
+End Class
+
+------------------------------------------------------------
+

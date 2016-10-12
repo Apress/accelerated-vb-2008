@@ -1,0 +1,209 @@
+Public Interface IDisposable
+   Sub Dispose()
+End Interface
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Runtime.InteropServices
+
+Public NotInheritable Class Win32Heap
+    Implements IDisposable
+
+    Private theHeap As IntPtr
+    Private disposed As Boolean = False
+
+    <DllImport("kernel32.dll")> _
+    Shared Function HeapCreate(ByVal flOptions As UInteger, _
+        ByVal dwInitialSize As UIntPtr, ByVal dwMaximumSize As UIntPtr) As IntPtr
+    End Function
+
+    <DllImport("kernel32.dll")> _
+    Shared Function HeapDestroy(ByVal hHeap As IntPtr) As Boolean
+    End Function
+
+    Public Sub New()
+        theHeap = HeapCreate(0, CType(4096, UIntPtr), UIntPtr.Zero)
+    End Sub
+
+    'IDisposable implementation
+    Public Sub Dispose() Implements IDisposable.Dispose
+        If (Not disposed) Then
+            HeapDestroy(theHeap)
+            theHeap = IntPtr.Zero
+            disposed = True
+        End If
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.IO
+
+Public NotInheritable Class WriteStuff
+    Shared Sub Main()
+        Dim sw As StreamWriter = New StreamWriter("Output.txt")
+
+        Try
+            sw.WriteLine("This is a test of the emergency dispose mechanism")
+        Finally
+            If Not sw Is Nothing Then
+                CType(sw, IDisposable).Dispose()
+            End If
+        End Try
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.IO
+
+Public NotInheritable Class WriteStuff
+    Shared Sub Main()
+        Using sw As StreamWriter = New StreamWriter("Output.txt")
+            sw.WriteLine("This is a test of the emergency dispose mechanism")
+        End Using
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Runtime.InteropServices
+
+Public Class Win32Heap
+    Implements IDisposable
+
+    Private theHeap As IntPtr
+    Private disposed As Boolean = False
+
+    <DllImport("kernel32.dll")> _
+    Shared Function HeapCreate(ByVal flOptions As UInteger, _
+        ByVal dwInitialSize As UIntPtr, ByVal dwMaximumSize As UIntPtr) As IntPtr
+    End Function
+
+    <DllImport("kernel32.dll")> _
+    Shared Function HeapDestroy(ByVal hHeap As IntPtr) As Boolean
+    End Function
+
+    Public Sub New()
+        theHeap = HeapCreate(0, CType(4096, UIntPtr), UIntPtr.Zero)
+    End Sub
+
+    'IDisposable implementation
+    Protected Overridable Sub Dispose(ByVal disposing As Boolean)
+        If (Not disposed) Then
+            If disposing Then
+                'It's OK to use any internal objects here.  
+                'This class happens not to have any.
+            End If
+
+            'If using objects that you know do still exist, such as objects
+            'that implement the singleton pattern, it is important to make
+            'sure those objects are thread-safe.
+
+            HeapDestroy(theHeap)
+            theHeap = IntPtr.Zero
+            disposed = True
+        End If
+    End Sub
+
+    Public Sub Dispose() Implements IDisposable.Dispose
+        Dispose(True)
+        GC.SuppressFinalize(Me)
+    End Sub
+
+    Protected Overrides Sub Finalize()
+        Dispose(False)
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Runtime.InteropServices
+Imports System.Diagnostics
+
+Public NotInheritable Class Win32Heap
+    Implements IDisposable
+
+    Private theHeap As IntPtr
+    Private disposed As Boolean = False
+    Private creationStackTrace As StackTrace
+
+    <DllImport("kernel32.dll")> _
+    Shared Function HeapCreate(ByVal flOptions As UInteger, _
+        ByVal dwInitialSize As UIntPtr, ByVal dwMaximumSize As UIntPtr) As IntPtr
+    End Function
+
+    <DllImport("kernel32.dll")> _
+    Shared Function HeapDestroy(ByVal hHeap As IntPtr) As Boolean
+    End Function
+
+    Public Sub New()
+        creationStackTrace = New StackTrace(1, True)
+
+        theHeap = HeapCreate(0, CType(4096, UIntPtr), UIntPtr.Zero)
+    End Sub
+
+    'IDisposable implementation
+    Private Sub Dispose(ByVal disposing As Boolean)
+        If (Not disposed) Then
+            If disposing Then
+                'It's OK to use any internal objects here.  
+                'This class happens to not have any.
+            Else
+                'OOPS!  We're finalizing this object, and it has not
+                'been disposed.  Let's let the user know about it if
+                'the app domain is not shutting down.
+                Dim currentDomain As AppDomain =  AppDomain.CurrentDomain
+                If (Not currentDomain.IsFinalizingForUnload()) AndAlso _
+                    (Not Environment.HasShutdownStarted) Then
+
+                    Console.WriteLine("Failed to dispose of object!!!")
+                    Console.WriteLine("Object allocated at:")
+
+                    Dim i As Integer = 0
+                    Do While i < creationStackTrace.FrameCount
+                        Dim frame As StackFrame = creationStackTrace.GetFrame(i)
+
+                        Console.WriteLine("   {0}", frame.ToString())
+                        i += 1
+                    Loop
+                End If
+            End If
+
+            'If using objects that you know do still exist, such
+            'as objects that implement the singleton pattern, it
+            'is important to make sure those objects are thread-safe.
+
+            HeapDestroy(theHeap)
+            theHeap = IntPtr.Zero
+            disposed = True
+        End If
+    End Sub
+
+    Public Sub Dispose() Implements IDisposable.Dispose
+        Dispose(True)
+        GC.SuppressFinalize(Me)
+    End Sub
+
+    Protected Overrides Sub Finalize()
+        Dispose(False)
+    End Sub
+End Class
+
+Public NotInheritable Class EntryPoint
+    Shared Sub Main()
+        Dim heap As Win32Heap = New Win32Heap()
+
+        heap = Nothing
+        GC.Collect()
+        GC.WaitForPendingFinalizers()
+    End Sub
+End Class
+
+------------------------------------------------------------
+

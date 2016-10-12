@@ -1,0 +1,52 @@
+Namespace Acme
+    Public Class Class1
+
+    End Class
+End Namespace
+
+------------------------------------------------------------
+
+Namespace Acme
+    Namespace Utilities
+        Public Class Class1
+
+        End Class
+    End Namespace
+End Namespace
+
+------------------------------------------------------------
+
+Namespace Acme
+
+End Namespace
+
+Namespace Acme.Utilities
+    Public Class Class1
+
+    End Class
+End Namespace
+
+------------------------------------------------------------
+
+Imports Acme.Utilities
+Dim c As Class1 = New Class1
+
+------------------------------------------------------------
+
+Namespace Acme.Data
+    Public Class DataTable
+
+    End Class
+End Namespace
+
+------------------------------------------------------------
+
+Imports System.Data
+Imports db = Acme.Data
+
+------------------------------------------------------------
+
+Dim c As db.DataTable = New db.DataTable
+
+------------------------------------------------------------
+

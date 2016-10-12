@@ -1,0 +1,21 @@
+Imports System
+Imports System.IO
+Imports System.Linq
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim MyDocsDir = My.Computer.FileSystem.SpecialDirectories.MyDocuments
+
+      Dim MyDocs = From d In New DirectoryInfo(MyDocsDir).GetFiles() _
+          Where d.Extension = ".doc" _
+          Order By d.Name _
+          Select d.Name, d.Extension
+
+      Console.WriteLine("My Documents is located at: " & MyDocsDir)
+      Console.WriteLine()
+
+      For Each Item In MyDocs
+         Console.WriteLine("Document Name: " & Item.Name & ".")
+      Next
+   End Sub
+End Class

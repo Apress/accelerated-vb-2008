@@ -1,0 +1,75 @@
+Imports <xmlns:o="urn:schemas-microsoft-com:office:office">
+Imports <xmlns:x="urn:schemas-microsoft-com:office:excel">
+Imports <xmlns="urn:schemas-microsoft-com:office:spreadsheet">
+Imports <xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+Imports System.Linq
+Imports System.Xml
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim Musicians As XDocument = XDocument.Load("..\..\Musicians.xml")
+      Dim Genres As XDocument = XDocument.Load("..\..\Genres.xml")
+
+      Dim MQuery = From M In Musicians.Elements("Musicians").Elements("Musician")
+      Dim GQuery = From G In Genres.Elements("Genres").Elements("Genre")
+
+      Dim Query = From M In MQuery _
+                  Join G In GQuery On M.Element("Genre").Value _
+                  Equals G.Element("ID").Value _
+                  Select _
+                  <Row>
+                     <Cell>
+                        <Data ss:Type="String">
+                           <%= M.Element("Name").Value %>
+                        </Data>
+                     </Cell>
+                     <Cell>
+                        <Data ss:Type="String">
+                           <%= G.Element("Name").Value %>
+                        </Data>
+                     </Cell>
+                  </Row>
+
+      Dim MusiciansExcel = _
+      <?xml version="1.0"?>
+      <?mso-application progid="Excel.Sheet"?>
+      <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+         xmlns:o="urn:schemas-microsoft-com:office:office"
+         xmlns:x="urn:schemas-microsoft-com:office:excel"
+         xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+         xmlns:html="http://www.w3.org/TR/REC-html40">
+         <Styles>
+            <Style ss:ID="Default" ss:Name="Normal">
+               <Font ss:FontName="Calibri"
+                  x:Family="Swiss"
+                  ss:Size="12"/>
+            </Style>
+            <Style ss:ID="Header">
+               <Font ss:FontName="Calibri"
+                  x:Family="Swiss"
+                  ss:Size="14"
+                  ss:Bold="1"/>
+            </Style>
+         </Styles>
+         <Worksheet ss:Name="Sheet1">
+            <Table ss:ExpandedColumnCount="2"
+               ss:ExpandedRowCount=<%= Query.Count + 1 %>
+               x:FullColumns="1"
+               x:FullRows="1"
+               ss:DefaultRowHeight="15">
+               <Row ss:StyleID="Header">
+                  <Cell><Data ss:Type="String">Musician</Data></Cell>
+                  <Cell><Data ss:Type="String">Genre</Data></Cell>
+               </Row>
+               <%= Query %>
+            </Table>
+         </Worksheet>
+      </Workbook>
+
+      MusiciansExcel.Save("MusiciansExcel.xml")
+      Process.Start("Excel.exe", "MusiciansExcel.xml")
+   End Sub
+End Class
+
+------------------------------------------------------------
+

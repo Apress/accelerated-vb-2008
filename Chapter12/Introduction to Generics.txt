@@ -1,0 +1,33 @@
+Public Class MyCollection(Of T)
+    Private Storage As T()
+
+    Public Sub New()
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Public Sub SomeMethod()
+    Dim collectionOfNumbers As MyCollection(Of Integer) = _
+        New MyCollection(Of Integer)()
+End Sub
+
+------------------------------------------------------------
+
+'THIS WILL NOT WORK!
+Public Sub SomeMethod(ByVal intNumbers As MyCollection(Of Integer))
+    Dim longNumbers As MyCollection(Of Long) = intNumbers ' ERROR!
+End Sub
+
+------------------------------------------------------------
+
+    Public Sub ProcessStrings(ByVal myStrings As String())
+        Dim objs As Object() = myStrings
+
+        For Each o As Object In objs
+            Console.WriteLine(o)
+        Next o
+    End Sub
+
+------------------------------------------------------------
+

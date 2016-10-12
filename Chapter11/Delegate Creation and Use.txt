@@ -1,0 +1,150 @@
+Public Delegate Function ProcessResults(ByVal x As Double, ByVal y As Double) _
+    As Double
+
+------------------------------------------------------------
+
+NotInheritable Class ProcessResults
+    Inherits System.MulticastDelegate
+
+    Public Function Invoke(ByVal x As Double, ByVal y As Double) As Double
+    End Function
+
+    'Other stuff omitted for clarity.
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Public Delegate Function ProcessResults(ByVal x As Double, ByVal y As Double) _
+    As Double
+
+Public Class Processor
+    Private factor As Double
+
+    Public Sub New(ByVal factor As Double)
+        Me.factor = factor
+    End Sub
+
+    Public Function Compute(ByVal x As Double, ByVal y As Double) As Double
+        Dim result As Double = (x + y) * factor
+
+        Console.WriteLine("InstanceResults: {0}", result)
+
+        Return result
+    End Function
+
+    Public Shared Function StaticCompute(ByVal x As Double, ByVal y As Double) _
+        As Double
+
+        Dim result As Double = (x + y) * 0.5
+
+        Console.WriteLine("StaticResult: {0}", result)
+
+        Return result
+    End Function
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim proc1 As Processor = New Processor(0.75)
+        Dim proc2 As Processor = New Processor(0.83)
+
+        Dim delegate1 As ProcessResults = _
+            New ProcessResults(AddressOf proc1.Compute)
+        Dim delegate2 As ProcessResults = _
+            New ProcessResults(AddressOf proc2.Compute)
+        Dim delegate3 As ProcessResults = _
+            New ProcessResults(AddressOf Processor.StaticCompute)
+
+        Dim combined As Double = _
+            delegate1(4, 5) + delegate2(6, 2) + delegate3(5, 2)
+
+        Console.WriteLine("Output: {0}", combined)
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Public Class Delegate
+    Implements ICloneable
+    Implements ISerializable
+
+    Public Shared Function Combine(ByVal Delegates As Delegate()) _
+        As Delegate
+    End Function
+
+    Public Shared Function Combine(ByVal First As Delegate, _
+        ByVal Second As Delegate) As Delegate
+    End Function
+End Class
+
+------------------------------------------------------------
+
+Public Class Delegate
+    Implements ICloneable
+    Implements ISerializable
+
+    Public Shared Function Remove(ByVal Source As Delegate, _
+        ByVal Value As Delegate) As Delegate
+    End Function
+
+    Public Shared Function RemoveAll(ByVal Source As Delegate, _
+        ByVal Value As Delegate) As Delegate
+    End Function
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Public Delegate Function ProcessResults(ByVal x As Double, ByVal y As Double) _
+    As Double
+
+Public Class Processor
+    Private factor As Double
+
+    Public Sub New(ByVal factor As Double)
+        Me.factor = factor
+    End Sub
+
+    Public Function Compute(ByVal x As Double, ByVal y As Double) As Double
+        Dim Result As Double = (x + y) * factor
+
+        Console.WriteLine("InstanceResults: {0}", Result)
+
+        Return Result
+    End Function
+
+    Public Shared Function StaticCompute(ByVal x As Double, ByVal y As Double) _
+        As Double
+
+        Dim Result As Double = (x + y) * 0.5
+
+        Console.WriteLine("StaticResult: {0}", Result)
+
+        Return Result
+    End Function
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim proc1 As Processor = New Processor(0.75)
+        Dim proc2 As Processor = New Processor(0.83)
+
+        Dim delegates As ProcessResults() = New ProcessResults() _
+            {New ProcessResults(AddressOf proc1.Compute), _
+            New ProcessResults(AddressOf proc2.Compute), _
+            New ProcessResults(AddressOf Processor.StaticCompute)}
+
+        Dim chained As ProcessResults = _
+            CType(System.Delegate.Combine(delegates), ProcessResults)
+
+        Dim combined As Double = chained(4, 5)
+
+        Console.WriteLine("Output: {0}", combined)
+    End Sub
+End Class
+
+------------------------------------------------------------
+

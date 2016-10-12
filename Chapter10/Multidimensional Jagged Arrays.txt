@@ -1,0 +1,33 @@
+Imports System
+Imports System.Text
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim jagged()() As Integer = New Integer(2)() {}
+        jagged(0) = New Integer() {1, 2}
+        jagged(1) = New Integer() {1, 2, 3, 4, 5}
+        jagged(2) = New Integer() {6, 5, 4}
+
+        For Each ar As Integer() In jagged
+            Dim sb As StringBuilder = New StringBuilder()
+
+            For Each n As Integer In ar
+                sb.AppendFormat("{0} ", n)
+            Next
+            Console.WriteLine(sb.ToString())
+        Next
+        Console.WriteLine()
+
+        For i As Integer = 0 To jagged.Length - 1
+            Dim sb As StringBuilder = New StringBuilder
+
+            For j As Integer = 0 To jagged(i).Length - 1
+                sb.AppendFormat("{0} ", jagged(i)(j))
+            Next
+            Console.WriteLine(sb.ToString())
+        Next
+    End Sub
+End Class
+
+------------------------------------------------------------
+

@@ -1,0 +1,83 @@
+Dim TheAnswer As Integer = 42
+Console.WriteLine(TheAnswer.ToString)
+
+------------------------------------------------------------
+
+Public Structure Coordinate 'This is a value type
+    Dim x As Integer
+    Dim y As Integer
+End Structure
+
+------------------------------------------------------------
+
+Public Structure Coordinate 'this is a value type
+    Dim x As Integer
+    Dim y As Integer
+End Structure
+
+Public Class EntryPoint 'this is a reference type
+    Public Function AttemptToModifyCoord(ByVal Coord As Coordinate) As Boolean
+        Coord.x = 1
+        Coord.y = 3
+        Return True
+    End Function
+
+    Public Function ModifyCoord(ByRef Coord As Coordinate) As Boolean
+        Coord.x = 10
+        Coord.y = 10
+        Return True
+    End Function
+
+    Shared Sub Main()
+        Dim Location As New Coordinate
+        Dim EP As New EntryPoint
+
+        Location.x = 50
+        Location.y = 50
+
+        EP.AttemptToModifyCoord(Location)
+        System.Console.WriteLine("( {0}, {1} )", Location.x, Location.y)
+
+        EP.ModifyCoord(Location)
+        System.Console.WriteLine("( {0}, {1} )", Location.x, Location.y)
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Enum CustomerType As Integer
+    Individual = 1
+    Corporate = 2
+    HomeBusiness = 3
+    Federal = 4
+End Enum
+
+------------------------------------------------------------
+
+Enum Color As Long
+    Red
+    Green = 50
+    Blue
+End Enum
+
+------------------------------------------------------------
+
+Public Class EntryPoint
+    Enum Color As Long
+        Red
+        Green = 50
+        Blue
+    End Enum
+
+    Shared Sub Main()
+        Dim SystemColor As Color = Color.Red
+
+        System.Console.WriteLine("Color is {0}", SystemColor.ToString)
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports ConsoleApplication1.Color
+Dim SystemColor As Color = Red
+

@@ -1,0 +1,87 @@
+Imports System
+Imports System.Diagnostics
+
+Public Class Database
+    Public Sub Commit()
+        Console.WriteLine("Changes Committed")
+    End Sub
+
+    Public Sub Rollback()
+        Console.WriteLine("Changes Abandoned")
+    End Sub
+End Class
+
+Public Class RollbackHelper
+    Implements IDisposable
+
+    Private DB As Database
+    Private Disposed As Boolean = False
+    Private Committed As Boolean = False
+
+    Public Sub New(ByVal db As Database)
+        Me.DB = db
+    End Sub
+
+    Protected Overrides Sub Finalize()
+        Try
+            Dispose(False)
+        Finally
+            MyBase.Finalize()
+        End Try
+    End Sub
+
+    Public Sub Dispose() Implements System.IDisposable.Dispose
+        Dispose(True)
+    End Sub
+
+    Public Sub Commit()
+        DB.Commit()
+        Committed = True
+    End Sub
+
+    Private Sub Dispose(ByVal disposing As Boolean)
+        'Don't do anything if already disposed.
+        'Remember, it is valid to call Dispose()
+        'multiple times on a disposable object.
+        If Not Disposed Then
+            'We don't want to do anything to the db if
+            'we got here from the finalizer because the database
+            'field could already be finalized!  However, we do
+            'want to free any unmanaged resources. But, in
+            'this case, there are none.
+            If disposing Then
+                If Not Committed Then
+                    DB.Rollback()
+                End If
+            Else
+                Debug.Assert(False, "Failed to call Dispose()" & _
+                    " on RollbackHelper")
+            End If
+            Me.Disposed = True
+        End If
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Private Shared db As Database
+    Private Shared nullPtr As Object = Nothing
+
+    Private Shared Sub DoSomeWork()
+        Using guard As RollbackHelper = New RollbackHelper(db)
+            'Here we do some work that could throw an exception.
+
+            'Comment out the following line to cause an exception
+            'nullPtr.GetType()
+
+            guard.Commit()
+        End Using
+    End Sub
+
+    Shared Sub Main()
+        db = New Database()
+        DoSomeWork()
+    End Sub
+End Class
+
+------------------------------------------------------------
+

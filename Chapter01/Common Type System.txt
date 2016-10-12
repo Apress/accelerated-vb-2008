@@ -1,0 +1,30 @@
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim Value1 As Integer = 0
+        Dim Value2 As Integer = Value1
+
+        Value2 = 123
+
+        Console.WriteLine("Values:  {0}, {1}", Value1.ToString, Value2.ToString)
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Class Class1
+    Public Value As Integer = 0
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim Reference1 As New Class1()
+        Dim Reference2 As Class1 = Reference1
+
+        Reference2.Value = 123
+
+        Console.WriteLine("Values:  {0}, {1}", Reference1.Value, Reference2.Value)
+    End Sub
+End Class
+
+------------------------------------------------------------
+

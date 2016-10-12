@@ -1,0 +1,154 @@
+Use master
+GO
+
+If DB_ID (N'AVB2008') IS NOT NULL
+    Drop Database AVB2008
+GO
+
+Create Database AVB2008
+GO
+
+Use AVB2008
+Go
+
+Create Table [dbo].[Genre]
+(
+    [ID]             [int]                   Identity(1, 1),
+    [Name]      [Varchar](10)    Not Null
+)
+Go
+
+Alter Table [dbo].[Genre]         Add Constraint [PK_Genre]
+Primary Key Clustered            ([ID] Asc)
+Go
+ 
+Create Table [dbo].[Musician]
+(
+    [ID]             [int]                   Identity(1, 1),
+    [Musician]  [varchar](50)    NOT NULL,
+    [Genre]       [int]                  NOT NULL
+) 
+Go
+
+Alter Table [dbo].[Musician]    Add Constraint [PK_Musician]
+Primary Key Clustered           ([ID] Asc)
+Go
+
+Alter Table [dbo].[Musician]     Add Constraint [UX_Musician] Unique NonClustered
+(
+    [Musician] Asc
+)
+Go
+
+Alter Table [dbo].[Musician]     With Check Add Constraint [FK_Musician_Genre]
+Foreign Key ([Genre])              References [dbo].[Genre] ([ID])
+Go
+
+Set Nocount On
+Go
+
+Insert [dbo].[Genre] ([Name]) Values ('Cool')
+Insert [dbo].[Genre] ([Name]) Values ('Screamin''')
+Insert [dbo].[Genre] ([Name]) Values ('Bebop')
+Insert [dbo].[Genre] ([Name]) Values ('Dixieland')
+Insert [dbo].[Genre] ([Name]) Values ('Classical')
+Go
+
+Insert [dbo].[Musician] Select 'Miles Davis', 1
+Insert [dbo].[Musician] Select 'Maynard Ferguson', 2
+Insert [dbo].[Musician] Select 'Dizzy Gillespie', 3
+Insert [dbo].[Musician] Select 'Bix Beiderbecke', 4
+Insert [dbo].[Musician] Select 'Louis Armstrong', 4
+Insert [dbo].[Musician] Select 'Gerard Schwarz', 5
+Insert [dbo].[Musician] Select 'Maurice Andre', 5
+Go
+
+Select * From [dbo].[Genre]
+Select * From [dbo].[Musician]
+Go
+
+------------------------------------------------------------
+
+Imports System.Linq
+Imports System.Data.Linq
+Imports System.Data.Linq.Mapping
+
+<Table(Name:="Genre")> _
+Public Class Genre
+   Private mID As Integer
+   Private mName As String
+
+   <Column(DbType:="Int Not Null Identity", Storage:="mID", IsPrimaryKey:=True, _
+           Name:="ID", IsDBGenerated:=True)> _
+   Public Property ID() As Integer
+      Get
+         Return Me.mID
+      End Get
+      Set(ByVal value As Integer)
+         Me.mID = value
+      End Set
+   End Property
+
+   <Column(DbType:="Varchar(10)", Storage:="mName", Name:="Name")> _
+   Public Property Name() As String
+      Get
+         Return Me.mName
+      End Get
+      Set(ByVal value As String)
+         Me.mName = value
+      End Set
+   End Property
+End Class
+
+------------------------------------------------------------
+
+Imports System.Linq
+Imports System.Data.Linq
+Imports System.Data.Linq.Mapping
+
+<Table(Name:="Musician")> _
+Public Class Musician
+   Private mID As Integer
+   Private mMusician As String
+   Private mGenre As Integer
+
+   <Column(DbType:="Int Not Null Identity", Storage:="mID", IsPrimaryKey:=True, _
+          Name:="ID", IsDBGenerated:=True)> _
+  Public Property ID() As Integer
+      Get
+         Return Me.mID
+      End Get
+      Set(ByVal value As Integer)
+         Me.mID = value
+      End Set
+   End Property
+
+   <Column(DbType:="Varchar(50)", Storage:="mMusician", Name:="Musician")> _
+   Public Property Musician() As String
+      Get
+         Return Me.mMusician
+      End Get
+      Set(ByVal value As String)
+         Me.mMusician = value
+      End Set
+   End Property
+
+   <Column(DbType:="Int", Storage:="mGenre", Name:="Genre")> _
+   Public Property Genre() As Integer
+      Get
+         Return Me.mGenre
+      End Get
+      Set(ByVal value As Integer)
+         Me.mGenre = value
+      End Set
+   End Property
+End Class
+
+------------------------------------------------------------
+
+      Dim DB_Connection As New String("Data Source=.\SQLEXPRESS;" & _
+            "Initial Catalog=AVB2008;Integrated Security=True")
+      Dim AVB_DataContext As New DataContext(DB_Connection)
+
+------------------------------------------------------------
+

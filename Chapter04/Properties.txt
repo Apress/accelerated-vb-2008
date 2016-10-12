@@ -1,0 +1,26 @@
+Public Class A
+    Private mTemperature As Integer
+
+    Public Property Temperature() As Integer
+        Get
+            System.Console.WriteLine("Getting value for temperature")
+            Return mTemperature
+        End Get
+        Set(ByVal value As Integer)
+            System.Console.WriteLine("Setting value for temperature")
+            mTemperature = value
+        End Set
+    End Property
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim obj As A = New A()
+
+        obj.Temperature = 1
+        System.Console.WriteLine("obj.Temperature = {0}", obj.Temperature)
+    End Sub
+End Class
+
+------------------------------------------------------------
+

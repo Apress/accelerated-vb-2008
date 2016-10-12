@@ -1,0 +1,129 @@
+﻿Imports System
+Imports System.Text.RegularExpressions
+
+Public Class EntryPoint
+    Shared Sub Main(ByVal args As String())
+        If args.Length < 1 Then
+            Console.WriteLine("You must provide a string.")
+            Return
+        End If
+
+        'Create Regex to search for IP address pattern.
+        Dim pattern As String = "([01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "([01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "([01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "([01]?\d\d?|2[0-4]\d|25[0-5])"
+
+        Dim regex As Regex = New Regex(pattern)
+        Dim match As Match = regex.Match(args(0))
+
+        While match.Success
+            Console.WriteLine("IP Address found at {0} with value of {1}", _
+                match.Index, match.Value)
+
+            match = match.NextMatch()
+        End While
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Text.RegularExpressions
+
+Public Class EntryPoint
+    Shared Sub Main(ByVal args As String())
+        If args.Length < 1 Then
+            Console.WriteLine("You must provide a string.")
+            Return
+        End If
+
+        'Create regex to search for IP address pattern.
+        Dim pattern As String = "([01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "([01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "([01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "([01]?\d\d?|2[0-4]\d|25[0-5])"
+
+        Dim regex As Regex = New Regex(pattern)
+        Dim match As Match = regex.Match(args(0))
+
+        While match.Success
+            Console.WriteLine("IP Address found at {0} with value of {1}", _
+                match.Index, match.Value)
+
+            Console.WriteLine()
+            Console.WriteLine("Groups are:")
+
+            For Each g As Group In match.Groups
+                Console.WriteLine("" & Chr(9) & "{0} at {1}", g.Value, g.Index)
+            Next
+
+            match = match.NextMatch()
+        End While
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Text.RegularExpressions
+
+Public Class EntryPoint
+    Shared Sub Main(ByVal args As String())
+        If args.Length < 1 Then
+            Console.WriteLine("You must provide a string.")
+            Return
+        End If
+
+        Dim pattern As String = "(?<part1>[01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "(?<part2>[01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "(?<part3>[01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "(?<part4>[01]?\d\d?|2[0-4]\d|25[0-5])"
+
+        Dim regex As Regex = New Regex(pattern)
+        Dim match As Match = regex.Match(args(0))
+
+        While match.Success
+            Console.WriteLine("IP Address found at {0} with value of {1}" & _
+                vbCrLf, match.Index, match.Value)
+
+            Console.WriteLine("Groups are:")
+            Console.WriteLine("" & Chr(9) & "Part 1: {0}", match.Groups("part1"))
+            Console.WriteLine("" & Chr(9) & "Part 2: {0}", match.Groups("part2"))
+            Console.WriteLine("" & Chr(9) & "Part 3: {0}", match.Groups("part3"))
+            Console.WriteLine("" & Chr(9) & "Part 4: {0}", match.Groups("part4"))
+
+            match = match.NextMatch()
+        End While
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Text.RegularExpressions
+
+Public Class EntryPoint
+    Shared Sub Main(ByVal args As String())
+        If args.Length < 1 Then
+            Console.WriteLine("You must provide a string.")
+            Return
+        End If
+
+        Dim pattern As String = "(?<part1>[01]?\d\d?|2[0-4]\d|25[0-5])\." & _
+            "\k<part1>\." & "\k<part1>\." & "\k<part1>"
+
+        Dim regex As Regex = New Regex(pattern)
+        Dim match As Match = regex.Match(args(0))
+
+        While match.Success
+            Console.WriteLine("IP Address found at {0} with value of {1}", _
+                match.Index, match.Value)
+
+            match = match.NextMatch()
+        End While
+    End Sub
+End Class
+
+------------------------------------------------------------
+

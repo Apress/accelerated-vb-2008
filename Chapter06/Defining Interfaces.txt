@@ -1,0 +1,179 @@
+Interface IUIControl
+   Sub Paint()
+End Interface
+
+------------------------------------------------------------
+
+Interface ITrivial
+End Interface
+
+Class A
+    Implements ITrivial
+End Class
+
+Class B
+    Implements ITrivial
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim ca As ITrivial = New A
+        Dim cb As ITrivial = New B
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Interface INonTrivial
+   Sub SomeMethod()
+End Interface
+
+Class A
+   Implements INonTrivial
+
+   Public Sub SomeMethod() Implements INonTrivial.SomeMethod
+      Console.WriteLine("Class A doing something.")
+   End Sub
+End Class
+
+Class B
+   Implements INonTrivial
+
+   Public Sub SomeMethod() Implements INonTrivial.SomeMethod
+      Console.WriteLine("Class B doing something.")
+   End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim ca As INonTrivial = New A
+        ca.SomeMethod()
+        Dim cb As INonTrivial = New B
+        cb.SomeMethod()
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Public Interface IMyDatabase
+   'Inherit from two other interfaces
+   Inherits IDisposable, ICloneable
+
+   'Method with no return type
+   Sub Insert(ByVal element As Object)
+
+   'Method with a return type
+   Function Retrieve(ByVal element As Object) As Object
+
+   'Property 
+   Property Count() As Integer
+
+   'Event
+   Event DBEvent()
+End Interface
+
+------------------------------------------------------------
+
+Public Interface IEditBox
+   Sub Edit()
+End Interface
+
+Public Interface IDropList
+   Sub DropDown()
+End Interface
+
+Public Interface IUIControl
+   Inherits IEditBox, IDropList
+
+   Sub Paint()
+End Interface
+
+Public Class ComboBox
+   Implements IUIControl
+
+   Sub Edit() Implements IUIControl.Edit
+      'Edit
+   End Sub
+
+   Sub DropDown() Implements IUIControl.DropDown
+      'Drop down
+   End Sub
+
+   Sub Paint() Implements IUIControl.Paint
+      'Paint
+   End Sub
+End Class
+
+------------------------------------------------------------
+
+Public Interface IUIControl
+    Sub Paint()
+End Interface
+
+Public Interface IEditBox
+    Inherits IUIControl
+
+    Sub Edit()
+End Interface
+
+Public Interface IDropList
+    Inherits IUIControl
+
+    Sub DropDown()
+End Interface
+
+Public Class ComboBox
+    Implements IEditBox, IDropList
+
+    Sub Edit() Implements IEditBox.Edit
+        'Edit implementation
+    End Sub
+
+    Sub DropDown() Implements IDropList.DropDown
+        'Drop down implementation
+    End Sub
+
+    Public Sub Paint() Implements IDropList.Paint
+        'Paint implementation
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Public Interface IUIControl
+    Sub Paint()
+End Interface
+
+Public Interface IEditBox
+    Inherits IUIControl
+
+    Sub Edit()
+End Interface
+
+Public Interface IDropList
+    Inherits IUIControl
+
+    Overloads Sub Paint()
+
+    Sub DropDown()
+End Interface
+
+Public Class ComboBox
+    Implements IEditBox, IDropList
+
+    Sub Edit() Implements IEditBox.Edit
+        'Edit implementation
+    End Sub
+
+    Sub DropDown() Implements IDropList.DropDown
+        'Drop down implementation
+    End Sub
+
+    Public Sub Paint() Implements IEditBox.Paint
+        'Paint implementation
+    End Sub
+
+    Public Sub DropPaint() Implements IDropList.Paint
+        'Paint DropList
+    End Sub
+End Class

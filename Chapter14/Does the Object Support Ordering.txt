@@ -1,0 +1,81 @@
+Public Interface IComparable
+   Function CompareTo(ByVal obj As Object) As Integer
+End Interface
+
+------------------------------------------------------------
+
+Imports System
+
+Public NotInheritable Class ComplexNumber
+    Implements IComparable
+
+    Private ReadOnly real As Double
+    Private ReadOnly imaginary As Double
+
+    'Other methods removed for clarity.
+
+    Public Sub New(ByVal real As Double, ByVal imaginary As Double)
+        Me.real = real
+        Me.imaginary = imaginary
+    End Sub
+
+    Public Overloads Overrides Function Equals(ByVal other As Object) As Boolean
+        Dim result As Boolean = False
+        Dim that As ComplexNumber = TryCast(other, ComplexNumber)
+
+        If Not that Is Nothing Then
+            result = InternalEquals(that)
+        End If
+
+        Return result
+    End Function
+
+    Public Overrides Function GetHashCode() As Integer
+        Return Fix(Me.Magnitude)
+    End Function
+
+    Public Shared Operator =(ByVal num1 As ComplexNumber, _
+        ByVal num2 As ComplexNumber) As Boolean
+
+        Return Object.Equals(num1, num2)
+    End Operator
+
+    Public Shared Operator <>(ByVal num1 As ComplexNumber, _
+        ByVal num2 As ComplexNumber) As Boolean
+
+        Return Not Object.Equals(num1, num2)
+    End Operator
+
+    Public Function CompareTo(ByVal other As Object) As Integer _
+        Implements IComparable.CompareTo
+
+        Dim that As ComplexNumber = TryCast(other, ComplexNumber)
+        If that Is Nothing Then
+            Throw New ArgumentException("Bad Comparison!")
+        End If
+
+        Dim result As Integer
+        If InternalEquals(that) Then
+            result = 0
+        ElseIf Me.Magnitude > that.Magnitude Then
+            result = 1
+        Else
+            result = -1
+        End If
+
+        Return result
+    End Function
+
+    Private Function InternalEquals(ByVal that As ComplexNumber) As Boolean
+        Return (Me.real = that.real) AndAlso (Me.imaginary = that.imaginary)
+    End Function
+
+    Public ReadOnly Property Magnitude() As Double
+        Get
+            Return Math.Sqrt(Math.Pow(Me.real, 2) + Math.Pow(Me.imaginary, 2))
+        End Get
+    End Property
+End Class
+
+------------------------------------------------------------
+

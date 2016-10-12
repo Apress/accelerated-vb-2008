@@ -1,0 +1,39 @@
+Imports System
+Imports System.Globalization
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim cib As CultureAndRegionInfoBuilder = Nothing
+
+        cib = New CultureAndRegionInfoBuilder("x-en-US-metric", _
+            CultureAndRegionModifiers.None)
+
+        cib.LoadDataFromCultureInfo(New CultureInfo("en-US"))
+        cib.LoadDataFromRegionInfo(New RegionInfo("US"))
+
+        'Make the change.
+        cib.IsMetric = True
+
+        'Create the LDML file.
+        cib.Save("x-en-US-metric.ldml")
+
+        'Register with the system.
+        cib.Register()
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Globalization
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim ri As RegionInfo = New RegionInfo("x-en-US-metric")
+
+        Console.WriteLine(ri.IsMetric)
+    End Sub
+End Class
+
+------------------------------------------------------------
+

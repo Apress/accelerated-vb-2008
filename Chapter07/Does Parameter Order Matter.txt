@@ -1,0 +1,31 @@
+Public Structure Complex
+    Private Real As Double
+    Private Imaginary As Double
+
+    Public Sub New(ByVal real As Double, ByVal imaginary As Double)
+        Me.Real = real
+        Me.Imaginary = imaginary
+    End Sub
+
+    Public Shared Function Add(ByVal lhs As Complex, ByVal rhs As Complex) _
+        As Complex
+
+        Return New Complex(lhs.Real + rhs.Real, lhs.Imaginary + rhs.Imaginary)
+    End Function
+
+    Public Shared Operator +(ByVal lhs As Complex, ByVal rhs As Complex) As Complex
+        Return Add(lhs, rhs)
+    End Operator
+End Structure
+
+------------------------------------------------------------
+
+Public Shared Operator +(ByVal lhs As Complex, ByVal rhs As Double) As Complex
+
+        Dim cpx1 As New Complex(1.0, 2.0)
+        Dim cpx2 = cpx1 + 20.0
+
+        Dim cpx2 = 20.0 + cpx1
+
+------------------------------------------------------------
+

@@ -1,0 +1,26 @@
+﻿Imports System
+Imports System.Text.RegularExpressions
+
+Public Class EntryPoint
+    Shared Sub Main(ByVal args As String())
+        If args.Length < 1 Then
+            Console.WriteLine("You must provide a string.")
+            Return
+        End If
+
+        'Create Regex to search for IP address pattern.
+        Dim pattern As String = "\d\d?\d?\.\d\d?\d?.\d\d?\d?.\d\d?\d?"
+        Dim regex As Regex = New Regex(pattern)
+        Dim match As Match = regex.Match(args(0))
+
+        While match.Success
+            Console.WriteLine("IP Address found at {0} with value of {1}", _
+                match.Index, match.Value)
+
+            match = match.NextMatch()
+        End While
+    End Sub
+End Class
+
+------------------------------------------------------------
+

@@ -1,0 +1,28 @@
+Imports Microsoft.VisualBasic
+Imports System
+Imports System.Threading
+
+Public Class EntryPoint
+    Private Shared Sub TimerProc(ByVal state As Object)
+        Console.WriteLine("The current time is {0} on thread {1}", _
+            DateTime.Now, Thread.CurrentThread.GetHashCode())
+
+        Thread.Sleep(3000)
+    End Sub
+
+    Shared Sub Main()
+        Console.WriteLine("Press <enter> when finished" & _
+            Constants.vbCrLf)
+
+        Dim myTimer As Timer = _
+            New Timer(New TimerCallback( _
+                AddressOf EntryPoint.TimerProc), _
+                Nothing, 0, 2000)
+
+        Console.ReadLine()
+        myTimer.Dispose()
+    End Sub
+End Class
+
+------------------------------------------------------------
+

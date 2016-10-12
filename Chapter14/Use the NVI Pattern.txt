@@ -1,0 +1,56 @@
+Imports System
+
+Public Class Base
+    Public Overridable Sub DoWork()
+        Console.WriteLine("Base.DoWork()")
+    End Sub
+End Class
+
+Public Class Derived
+    Inherits Base
+
+    Public Overrides Sub DoWork()
+        Console.WriteLine("Derived.DoWork()")
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim b As Base = New Derived()
+
+        b.DoWork()
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Public Class Base
+    Public Sub DoWork()
+        CoreDoWork()
+    End Sub
+
+    Protected Overridable Sub CoreDoWork()
+        Console.WriteLine("Base.DoWork()")
+    End Sub
+End Class
+
+Public Class Derived
+    Inherits Base
+
+    Protected Overrides Sub CoreDoWork()
+        Console.WriteLine("Derived.DoWork()")
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim b As Base = New Derived()
+
+        b.DoWork()
+    End Sub
+End Class
+
+------------------------------------------------------------
+

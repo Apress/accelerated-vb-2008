@@ -1,0 +1,83 @@
+Public Class A
+    Public x As Integer
+    Public y As Integer
+
+    Sub New(ByVal x As Integer, ByVal y As Integer)
+        Me.x = x
+        Me.y = y
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        'We can't do this!
+        'Dim objA As New A()
+
+        Dim objA As New A(1, 2)
+        System.Console.WriteLine("objA.x = {0}; objA.y = {1}", objA.x, objA.y)
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Public Class A
+    Private y As Integer = InitY()
+    Private x As Integer = InitX()
+    Private Shared a As Integer = InitA()
+    Private Shared b As Integer = InitB()
+
+    Shared Sub New()
+        Console.WriteLine("Shared A::A()")
+    End Sub
+
+    Private Shared Function InitX() As Integer
+        Console.WriteLine("A.InitX()")
+        Return 1
+    End Function
+
+    Private Shared Function InitY() As Integer
+        Console.WriteLine("A.InitY()")
+        Return 2
+    End Function
+
+    Private Shared Function InitA() As Integer
+        Console.WriteLine("A.InitA()")
+        Return 3
+    End Function
+
+    Private Shared Function InitB() As Integer
+        Console.WriteLine("A.InitB()")
+        Return 4
+    End Function
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim objA As A = New A
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Public Class A
+    Private x As Integer
+
+    Public Sub New(ByVal x As Integer)
+        Me.x = x
+    End Sub
+End Class
+
+Public Class B
+    Inherits A
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim objB As B = New B()
+    End Sub
+End Class
+
+------------------------------------------------------------
+

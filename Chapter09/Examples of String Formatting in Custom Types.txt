@@ -1,0 +1,61 @@
+Imports System
+Imports System.Text
+Imports System.Globalization
+
+Public Structure Complex
+    Implements IFormattable
+
+    Private real As Double
+    Private imaginary As Double
+
+    Public Sub New(ByVal real As Double, ByVal imaginary As Double)
+        Me.real = real
+        Me.imaginary = imaginary
+    End Sub
+
+    'IFormattable implementation
+    Public Overloads Function ToString(ByVal format As String, _
+        ByVal formatProvider As IFormatProvider) As String _
+        Implements IFormattable.ToString
+
+        Dim sb As StringBuilder = New StringBuilder()
+
+        If format = "DBG" Then
+            sb.Append(Me.[GetType]().ToString() & "" & vbCrLf & "")
+
+            sb.AppendFormat("" & vbTab  & "real:" & vbTab & _
+                "{0}" & vbCrLf & "", real)
+
+            sb.AppendFormat("" & vbTab & "imaginary:" & vbTab & _
+                "{0}" & vbCrLf & "", imaginary)
+        Else
+            sb.Append("( ")
+            sb.Append(real.ToString(format, formatProvider))
+            sb.Append(" : ")
+            sb.Append(imaginary.ToString(format, formatProvider))
+            sb.Append(" )")
+        End If
+
+        Return sb.ToString()
+    End Function
+End Structure
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim local As CultureInfo = CultureInfo.CurrentCulture
+        Dim germany As CultureInfo = New CultureInfo("de-DE")
+        Dim cpx As Complex = New Complex(12.3456, 1234.56)
+        Dim strCpx As String = cpx.ToString("F", local)
+
+        Console.WriteLine(strCpx)
+        strCpx = cpx.ToString("F", germany)
+
+        Console.WriteLine(strCpx)
+
+        Console.WriteLine("" & vbCrLf & "Debugging output:" & vbCrLf & _
+            "{0:DBG}", cpx)
+    End Sub
+End Class
+
+------------------------------------------------------------
+

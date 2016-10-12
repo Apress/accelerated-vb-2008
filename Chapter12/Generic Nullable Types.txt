@@ -1,0 +1,49 @@
+Imports System
+
+Public Class Employee
+    Public FirstName As String
+    Public LastName As String
+    Public StartDate As DateTime
+
+    Public TerminationDate As Nullable(Of DateTime)
+    Public SSN As Nullable(Of Long)
+
+    Public Sub New(ByVal firstName As String, ByVal lastName As String, _
+                    ByVal startDate As DateTime)
+        Me.FirstName = firstName
+        Me.LastName = lastName
+        Me.StartDate = startDate
+
+        Me.TerminationDate = Nothing
+        Me.SSN = Nothing
+    End Sub
+
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim emp As Employee = New Employee("Jodi", "Fouche", "10/22/1988")
+        Dim tempSSN As Long
+
+        emp.SSN = 123456789
+
+        Console.WriteLine("{0} {1} started on {2}", _
+            emp.FirstName, emp.LastName, emp.StartDate.ToShortDateString)
+
+        If emp.SSN.HasValue Then
+            tempSSN = emp.SSN
+        End If
+        Console.WriteLine("SSN: {0}", tempSSN)
+
+        If emp.TerminationDate.HasValue Then
+            Console.WriteLine("Termination Date: {0}", _
+                              emp.TerminationDate.HasValue)
+        Else
+            Console.WriteLine(emp.FirstName + " " + emp.LastName + _
+                              " is still active.")
+        End If
+    End Sub
+End Class
+
+------------------------------------------------------------
+

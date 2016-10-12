@@ -1,0 +1,59 @@
+Public Interface ICollection(Of T)
+    Inherits IEnumerable(Of T)
+    Inherits IEnumerable
+
+    ReadOnly Property Count() As Integer
+    ReadOnly Property IsReadOnly() As Boolean
+
+    Sub Add(ByVal item As T)
+    Sub Clear()
+
+    Function Contains(ByVal item As T) As Boolean
+    Sub CopyTo(ByVal array As T(), ByVal arrayIndex As Integer)
+    Function Remove(ByVal item As T) As Boolean
+End Interface
+For the sake of comparison, this code includes the nongeneric ICollection interface definition as well:
+Public Interface ICollection
+    Inherits IEnumerable
+
+    ReadOnly Property Count() As Integer
+    ReadOnly Property IsSynchronized() As Boolean
+    ReadOnly Property SyncRoot() As Object
+
+    Sub CopyTo(ByVal array As Array, ByVal index As Integer)
+End Interface
+
+------------------------------------------------------------
+
+Public Interface IList(Of T)
+    Inherits ICollection(Of T)
+    Inherits IEnumerable(Of T)
+    Inherits IEnumerable
+
+    Default Property Item(ByVal index As Integer) As T
+
+    Function IndexOf(ByVal item As T) As Integer
+       Sub Insert(ByVal index As Integer, ByVal item As T)
+       Sub RemoveAt(ByVal index As Integer)
+End Interface
+The IList interface is a bit larger:
+Public Interface IList
+    Inherits ICollection
+    Inherits IEnumerable
+
+    ReadOnly Property IsFixedSize() As Boolean
+    ReadOnly Property IsReadOnly() As Boolean
+
+    Default ReadOnly Property Item(ByVal index As Integer) As Object
+
+    Function Add(ByVal value As Object) As Integer
+    Sub Clear()
+    Function Contains(ByVal value As Object) As Boolean
+    Function IndexOf(ByVal value As Object) As Integer
+    Sub Insert(ByVal index As Integer, ByVal value As Object)
+    Sub Remove(ByVal value As Object)
+    Sub RemoveAt(ByVal index As Integer)
+End Interface
+
+------------------------------------------------------------
+

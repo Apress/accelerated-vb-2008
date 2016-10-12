@@ -1,0 +1,178 @@
+Function ComputeAvg(ByVal Param1 As Integer, ByVal Param2 As Integer) As Double
+      Return (Param1 + Param2) / 2
+End Function
+
+Dim Param1 As Short = 108
+Dim Param2 As Short = 123
+Dim ComputedAverage As Double
+
+ComputedAverage = ComputeAvg(Param1, Param2)
+
+------------------------------------------------------------
+
+Dim StringValue As String = "123"
+Dim IntegerValue As Integer
+
+IntegerValue = CInt(StringValue)
+
+------------------------------------------------------------
+
+Dim StringValue As String = "123"
+Dim IntegerValue As Integer
+
+IntegerValue = Convert.ToInt32(StringValue)
+
+------------------------------------------------------------
+
+Public Class Coordinate
+        Public x As Integer
+        Public y As Integer
+End Class
+
+Public Class GraphCoordinate
+        Inherits Coordinate
+
+        Public PointDesc As String
+End Class
+
+Public Function PrintCoordinates(ByVal Coord As Coordinate) As Boolean
+        System.Console.WriteLine("( {0}, {1} )", Coord.x, Coord.y)
+
+        Return True
+End Function
+
+------------------------------------------------------------
+
+Dim Coord As New Coordinate
+Coord.x = 10
+Coord.y = 50
+
+Dim oCoord As Object = New Coordinate
+
+------------------------------------------------------------
+
+Dim GraphCoord As New GraphCoordinate
+GraphCoord.x = 50
+GraphCoord.y = 50
+GraphCoord.PointDesc = "This is the graph point"
+
+PrintCoordinates(Coord)
+PrintCoordinates(GraphCoord)
+PrintCoordinates(oCoord)
+
+------------------------------------------------------------
+
+PrintCoordinates(CType(oCoord, Coordinate))
+
+------------------------------------------------------------
+
+If TypeOf (oCoord) Is Coordinate Then
+    PrintCoordinates(CType(oCoord, Coordinate))
+End If
+
+------------------------------------------------------------
+
+DirectCast(expression, Type)
+
+------------------------------------------------------------
+
+Dim y As Object = TryCast(x, EntryPoint)
+If y Is Nothing Then
+    'Do something here, for failed cast
+Else
+    'Do something here, for successful cast
+End If
+
+------------------------------------------------------------
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim EmployeeID As Integer = 303
+        Dim BoxedID As Object = EmployeeID
+        Dim UnboxedID As Integer = CInt(BoxedID)
+
+        EmployeeID = 404
+
+        System.Console.WriteLine(EmployeeID.ToString())
+        System.Console.WriteLine(UnboxedID.ToString())
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Public Class EntryPoint
+    Public Class BaseType
+        Public x As Integer
+        Public y As Integer
+    End Class
+
+    Public Class DerivedType
+        Inherits BaseType
+
+        Public DT1 As Long
+        Public Description As String
+    End Class
+
+    Shared Sub Main()
+        Dim DerivedObj As DerivedType = New DerivedType()
+        Dim BaseObj1 As BaseType = New BaseType()
+        Dim BaseObj2 = DerivedObj
+
+        If TypeOf BaseObj2 Is DerivedType Then
+            Console.WriteLine("BaseObj2 {0} DerivedType", "is")
+        Else
+            Console.WriteLine("BaseObj2 {0} DerivedType", "isnot")
+        End If
+
+        If TypeOf BaseObj1 Is DerivedType Then
+            Console.WriteLine("BaseObj1 {0} DerivedType", "is")
+        Else
+            Console.WriteLine("BaseObj1 {0} DerivedType", "isnot")
+        End If
+
+        If TypeOf DerivedObj Is BaseType Then
+            Console.WriteLine("DerivedObj {0} BaseType", "is")
+        Else
+            Console.WriteLine("DerivedObj {0} BaseType", "isnot")
+        End If
+
+        Dim j As Integer = 123
+        Dim Boxed As Object = j
+        Dim Obj As Object = New Object()
+
+        If TypeOf Boxed Is Integer Then
+            Console.WriteLine("Boxed {0} Integer", "is")
+        Else
+            Console.WriteLine("Boxed {0} Integer", "isnot")
+        End If
+
+        If TypeOf Obj Is Integer Then
+            Console.WriteLine("Obj {0} Integer", "is")
+        Else
+            Console.WriteLine("Obj {0} Integer", "isnot")
+        End If
+
+        If TypeOf Boxed Is ValueType Then
+            Console.WriteLine("Boxed {0} System.ValueType", "is")
+        Else
+            Console.WriteLine("Boxed {0} System.ValueType", "isnot")
+        End If
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Dim ObjectA As New Object
+Dim ObjectB As New Object
+Dim ObjectC As New Object
+Dim ObjectD As New Object
+Dim IsObject As Boolean
+
+ObjectA = ObjectC
+ObjectB = ObjectC
+
+IsObject = ObjectA Is ObjectC
+IsObject = ObjectB Is ObjectC
+IsObject = ObjectB Is ObjectA
+IsObject = ObjectC Is ObjectD
+

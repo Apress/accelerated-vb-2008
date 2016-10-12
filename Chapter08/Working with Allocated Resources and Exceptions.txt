@@ -1,0 +1,118 @@
+Imports System
+Imports System.IO
+Imports System.Text
+
+Public Class EntryPoint
+    Public Shared Sub DoSomeStuff()
+        Dim fs As FileStream = _
+        File.Open("log.txt", FileMode.Append, FileAccess.Write, FileShare.None)
+
+        Dim msg As Byte() = New UTF8Encoding(True).GetBytes("Doing Some" & " Stuff")
+
+        fs.Write(msg, 0, msg.Length)
+    End Sub
+
+    Public Shared Sub DoSomeMoreStuff()
+        Dim fs As FileStream = _
+        File.Open("log.txt", FileMode.Append, FileAccess.Write, FileShare.None)
+
+        Dim msg As Byte() = New UTF8Encoding(True).GetBytes("Doing Some" & _
+            " More Stuff")
+
+        fs.Write(msg, 0, msg.Length)
+    End Sub
+
+    Shared Sub Main()
+        DoSomeStuff()
+        DoSomeMoreStuff()
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.IO
+Imports System.Text
+
+Public Class EntryPoint
+    Public Shared Sub DoSomeStuff()
+        'Open a file.
+        Dim fs As FileStream = Nothing
+
+        Try
+            fs = File.Open("log.txt", FileMode.Append, FileAccess.Write, _
+                FileShare.None)
+            Dim msg As Byte() = New UTF8Encoding(True).GetBytes("Doing Some" & _
+                " Stuff")
+
+            fs.Write(msg, 0, msg.Length)
+        Finally
+            If Not (fs Is Nothing) Then
+                fs.Close()
+            End If
+        End Try
+    End Sub
+
+    Public Shared Sub DoSomeMoreStuff()
+        'Open a file
+        Dim fs As FileStream = Nothing
+
+        Try
+            fs = File.Open("log.txt", FileMode.Append, FileAccess.Write, _
+                FileShare.None)
+            Dim msg As Byte() = New UTF8Encoding(True).GetBytes("Doing Some" & _
+                " More Stuff")
+
+            fs.Write(msg, 0, msg.Length)
+        Finally
+            If Not (fs Is Nothing) Then
+                fs.Close()
+            End If
+        End Try
+    End Sub
+
+    Shared Sub Main()
+        DoSomeStuff()
+        DoSomeMoreStuff()
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.IO
+Imports System.Text
+
+Public Class EntryPoint
+    Public Shared Sub DoSomeStuff()
+        'Open a file.
+        Using fs As FileStream = _
+        File.Open("log.txt", FileMode.Append, FileAccess.Write, FileShare.None)
+
+            Dim msg As Byte() = New UTF8Encoding(True).GetBytes("Doing Some" & _
+                " Stuff")
+
+            fs.Write(msg, 0, msg.Length)
+        End Using
+    End Sub
+
+    Public Shared Sub DoSomeMoreStuff()
+        'Open a file.
+        Using fs As FileStream = _
+        File.Open("log.txt", FileMode.Append, FileAccess.Write, FileShare.None)
+
+            Dim msg As Byte() = New UTF8Encoding(True).GetBytes("Doing Some" & _
+                " More Stuff")
+
+            fs.Write(msg, 0, msg.Length)
+        End Using
+    End Sub
+
+    Shared Sub Main()
+        DoSomeStuff()
+        DoSomeMoreStuff()
+    End Sub
+End Class
+
+------------------------------------------------------------
+

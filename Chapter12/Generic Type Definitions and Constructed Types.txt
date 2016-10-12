@@ -1,0 +1,35 @@
+Public Class A(Of T)
+    Private innerObject As T
+End Class
+
+Public Class Consumer(Of T)
+    Private obj As A(Of Stack(Of T))
+End Class
+
+------------------------------------------------------------
+
+Public Class Container
+End Class
+
+Public Class Container(Of T)
+End Class
+
+Public Class Container(Of T, R)
+End Class
+
+------------------------------------------------------------
+
+Public Class A(Of T)
+    Private field1 As Container(Of Integer)
+    Private field2 As Container(Of T)
+End Class
+
+------------------------------------------------------------
+
+Public Class A(Of T)
+    Public Class NestedClass(Of R)
+    End Class
+End Class
+
+------------------------------------------------------------
+

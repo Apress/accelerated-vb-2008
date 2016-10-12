@@ -1,0 +1,64 @@
+Imports System
+Imports System.Collections
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Try
+            Try
+                Dim list As ArrayList = New ArrayList()
+                list.Add(1)
+
+                Console.WriteLine("Item 10 = {0}", list(10))
+            Catch ex As ArgumentOutOfRangeException
+                Console.WriteLine("Do some useful work and then re-throw")
+
+                'Re-throw caught exception.
+                Throw
+            Finally
+                Console.WriteLine("Cleaning up...")
+            End Try
+
+        Catch
+            Console.WriteLine("Done")
+        End Try
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Collections
+
+Public Class MyException
+    Inherits Exception
+
+    Public Sub New(ByVal reason As String, ByVal inner As Exception)
+        MyBase.New(reason, inner)
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Try
+            Try
+                Dim list As ArrayList = New ArrayList()
+                list.Add(1)
+                Console.WriteLine("Item 10 = {0}", list(10))
+
+            Catch x As ArgumentOutOfRangeException
+                Console.WriteLine("Do some useful work and then re-throw")
+                Throw New MyException("I'd rather throw this", x)
+
+            Finally
+                Console.WriteLine("Cleaning up...")
+            End Try
+
+        Catch x As Exception
+            Console.WriteLine(x)
+            Console.WriteLine("Done")
+        End Try
+    End Sub
+End Class
+
+------------------------------------------------------------
+

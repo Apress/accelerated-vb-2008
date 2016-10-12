@@ -1,0 +1,86 @@
+Imports System
+Imports System.Threading
+
+Public Class EntryPoint
+    Private Shared Sub ThreadFunc()
+        Console.WriteLine("Hello from new thread {0}!", _
+            Thread.CurrentThread.GetHashCode())
+    End Sub
+
+    Shared Sub Main()
+        'Create the new thread.
+        Dim newThread As Thread = _
+            New Thread(AddressOf EntryPoint.ThreadFunc)
+
+        Console.WriteLine("Main Thread is {0}", _
+            Thread.CurrentThread.GetHashCode())
+        Console.WriteLine("Starting new thread . . . ")
+
+        'Start the new thread.
+        newThread.Start()
+
+        'Wait for new thread to finish.
+        newThread.Join()
+
+        Console.WriteLine("New thread has finished")
+    End Sub
+End Class
+
+------------------------------------------------------------
+
+Imports System
+Imports System.Threading
+Imports System.Collections
+
+Public Class QueueProcessor
+    Private mQueue As Queue
+    Private mThread As Thread
+
+    Public Sub New(ByVal theQueue As Queue)
+        Me.mQueue = theQueue
+        mThread = New Thread(AddressOf Me.ThreadFunc)
+    End Sub
+
+    Public ReadOnly Property TheThread() As Thread
+        Get
+            Return mThread
+        End Get
+    End Property
+
+    Public Sub BeginProcessData()
+        mThread.Start()
+    End Sub
+
+    Public Sub EndProcessData()
+        mThread.Join()
+    End Sub
+
+    Private Sub ThreadFunc()
+        ' . . .  drain theQueue here.
+    End Sub
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim queue1 As Queue = New Queue()
+        Dim queue2 As Queue = New Queue()
+
+        ' . . .  operations to fill the queues with data.
+
+        'Process each queue in a separate thread.
+        Dim proc1 As QueueProcessor = New QueueProcessor(queue1)
+        proc1.BeginProcessData()
+
+        Dim proc2 As QueueProcessor = New QueueProcessor(queue2)
+        proc2.BeginProcessData()
+
+        ' . . .  do some other work in the meantime.
+
+        'Wait for the work to finish.
+        proc1.EndProcessData()
+        proc2.EndProcessData()
+    End Sub
+End Class
+
+------------------------------------------------------------
+

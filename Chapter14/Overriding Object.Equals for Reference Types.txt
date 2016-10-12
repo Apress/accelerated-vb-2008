@@ -1,0 +1,53 @@
+Public Class ComplexNumber
+    Private real As Double
+    Private imaginary As Double
+
+    Public Sub New(ByVal real As Integer, ByVal imaginary As Integer)
+        Me.real = real
+        Me.imaginary = imaginary
+    End Sub
+
+    Public Overrides Function Equals(ByVal obj As Object) As Boolean
+        Dim other As ComplexNumber = TryCast(obj, ComplexNumber)
+
+        If other Is Nothing Then
+            Return False
+        End If
+
+        Return (Me.real = other.real) AndAlso (Me.imaginary = other.imaginary)
+    End Function
+
+    Public Overrides Function GetHashCode() As Integer
+        'This function is discussed later in the chapter.
+        Return Fix(real) Xor Fix(imaginary)
+    End Function
+
+    Public Shared Operator =(ByVal CN As ComplexNumber, _
+        ByVal other As ComplexNumber) As Boolean
+
+        Return Equals(CN, other)
+    End Operator
+
+    Public Shared Operator <>(ByVal CN As ComplexNumber, _
+        ByVal other As ComplexNumber) As Boolean
+
+        Return Not Equals(CN, other)
+    End Operator
+End Class
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim referenceA As ComplexNumber = New ComplexNumber(1, 2)
+        Dim referenceB As ComplexNumber = New ComplexNumber(1, 2)
+
+        System.Console.WriteLine("Result of Equality is {0}", _
+            referenceA = referenceB)
+
+        'If we really want referential equality.
+        System.Console.WriteLine("Identity of references is {0}", _
+            ReferenceEquals(referenceA, referenceB))
+    End Sub
+End Class
+
+------------------------------------------------------------
+

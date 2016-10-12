@@ -1,0 +1,200 @@
+Dim obj As Object = New Object()
+Dim objCopy As Object = obj
+
+Public Interface ICloneable
+   Function Clone() As Object
+End Interface
+
+------------------------------------------------------------
+
+Imports System
+
+Public NotInheritable Class Dimensions
+    Implements ICloneable
+
+    Private width As Long
+    Private height As Long
+
+    Public Sub New(ByVal width As Long, ByVal height As Long)
+        Me.width = width
+        Me.height = height
+    End Sub
+
+    'ICloneable implementation
+    Public Function Clone() As Object Implements ICloneable.Clone
+        Return Me.MemberwiseClone()
+    End Function
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Public NotInheritable Class Dimensions
+    Implements ICloneable
+
+    Private width As Long
+    Private height As Long
+
+    Public Sub New(ByVal width As Long, ByVal height As Long)
+        Console.WriteLine("Dimensions(long, long) called")
+
+        Me.width = width
+        Me.height = height
+    End Sub
+
+    'Private copy constructor used when making a copy of this object.
+    Private Sub New(ByVal other As Dimensions)
+        Console.WriteLine("Dimensions(Dimensions) called")
+
+        Me.width = other.width
+        Me.height = other.height
+    End Sub
+
+    'ICloneable implementation
+    Public Function Clone() As Object Implements ICloneable.Clone
+        Return New Dimensions(Me)
+    End Function
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+'Title class
+Public NotInheritable Class Title
+    Implements ICloneable
+
+    Private mTitle As TitleNameEnum
+    Private minPay As Double
+    Private maxPay As Double
+
+    Public Enum TitleNameEnum
+        GreenHorn
+        HotshotGuru
+    End Enum
+
+    Public Sub New(ByVal title As TitleNameEnum)
+        Me.mTitle = title
+
+        LookupPayScale()
+    End Sub
+
+    Private Sub New(ByVal other As Title)
+        Me.mTitle = other.mTitle
+
+        LookupPayScale()
+    End Sub
+
+    'ICloneable implementation
+    Public Function Clone() As Object Implements ICloneable.Clone
+        Return New Title(Me)
+    End Function
+
+    Private Sub LookupPayScale()
+        'Looks up pay scale in a database. Payscale is based upon the title.
+    End Sub
+End Class
+
+'Employee class
+Public NotInheritable Class Employee
+    Implements ICloneable
+
+    Private name As String
+    Private title As Title
+    Private ssn As String
+
+    Public Sub New(ByVal name As String, ByVal title As Title, ByVal ssn As String)
+        Me.name = name
+        Me.title = title
+        Me.ssn = ssn
+    End Sub
+
+    Private Sub New(ByVal other As Employee)
+        Me.name = String.Copy(other.name)
+        Me.title = CType(other.title.Clone(), Title)
+        Me.ssn = String.Copy(other.ssn)
+    End Sub
+
+    'ICloneable implementation
+    Public Function Clone() As Object Implements ICloneable.Clone
+        Return New Employee(Me)
+    End Function
+End Class
+
+------------------------------------------------------------
+
+Imports System
+
+Namespace CloneHelpers
+   Public Enum CloneStyle
+      Deep
+      Shallow
+   End Enum
+
+   <AttributeUsageAttribute(AttributeTargets.Method)> _
+   Public NotInheritable Class CloneStyleAttribute
+      Inherits Attribute
+
+      Private mClonestyle As CloneStyle
+
+      Public Sub New(ByVal aClonestyle As CloneStyle)
+         Me.mClonestyle = aClonestyle
+      End Sub
+
+      Public ReadOnly Property Style() As CloneStyle
+         Get
+            Return mClonestyle
+         End Get
+      End Property
+   End Class
+End Namespace
+
+------------------------------------------------------------
+
+Imports System
+
+Namespace CloneHelpers
+   Public Enum CloneStyle
+      Deep
+      Shallow
+   End Enum
+
+   <AttributeUsageAttribute(AttributeTargets.Method)> _
+   Public NotInheritable Class CloneStyleAttribute
+      Inherits Attribute
+
+      Private mClonestyle As CloneStyle
+
+      Public Sub New(ByVal aClonestyle As CloneStyle)
+         Me.mClonestyle = aClonestyle
+      End Sub
+
+      Public ReadOnly Property Style() As CloneStyle
+         Get
+            Return mClonestyle
+         End Get
+      End Property
+   End Class
+End Namespace
+
+Public NotInheritable Class Dimensions
+   Implements ICloneable
+
+   Private width As Long
+   Private height As Long
+
+   Public Sub New(ByVal width As Long, ByVal height As Long)
+      Me.width = width
+      Me.height = height
+   End Sub
+
+   'ICloneable implementation
+   <CloneStyleAttribute(CloneStyle.Deep)> _
+   Public Function Clone() As Object Implements ICloneable.Clone
+      Return Me.MemberwiseClone()
+   End Function
+End Class
+
+------------------------------------------------------------
+

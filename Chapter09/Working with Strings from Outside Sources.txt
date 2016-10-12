@@ -1,0 +1,44 @@
+﻿Imports System
+Imports System.Text
+Imports System.Windows.Forms
+
+Public Class EntryPoint
+    Shared Sub Main()
+        Dim leUnicodeStr As String = " здорово!"
+Production: Please note the Russian alphabet symbols in the preceding code line.
+        Dim leUnicode As Encoding = Encoding.Unicode
+        Dim beUnicode As Encoding = Encoding.BigEndianUnicode
+        Dim utf8 As Encoding = Encoding.UTF8
+
+        Dim leUnicodeBytes As Byte() = leUnicode.GetBytes(leUnicodeStr)
+        Dim beUnicodeBytes As Byte() = _
+            Encoding.Convert(leUnicode, beUnicode, leUnicodeBytes)
+        Dim utf8Bytes As Byte() = Encoding.Convert(leUnicode, utf8, leUnicodeBytes)
+
+        MessageBox.Show(leUnicodeStr, "Original String")
+
+        Dim sb As StringBuilder = New StringBuilder()
+        For Each b As Byte In leUnicodeBytes
+            sb.Append(b).Append(" : ")
+        Next
+
+        MessageBox.Show(sb.ToString(), "Little Endian Unicode Bytes")
+
+        sb = New StringBuilder()
+        For Each b As Byte In beUnicodeBytes
+            sb.Append(b).Append(" : ")
+        Next
+
+        MessageBox.Show(sb.ToString(), "Big Endian Unicode Bytes")
+
+        sb = New StringBuilder()
+        For Each b As Byte In utf8Bytes
+            sb.Append(b).Append(" : ")
+        Next
+
+        MessageBox.Show(sb.ToString(), "UTF Bytes")
+    End Sub
+End Class
+
+------------------------------------------------------------
+

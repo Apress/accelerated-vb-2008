@@ -1,0 +1,36 @@
+Imports System.Xml.Linq
+
+Public Class EntryPoint
+   Shared Sub Main()
+      Dim Musicians_XML As New XDocument(New XDeclaration("1.0", "UTF-8", "yes"), _
+         New XElement("Musicians", _
+         New XComment("This level will hold all our musicians.")))
+
+      Dim Musician As XElement = Musicians_XML.<Musicians>.First
+      Musician.Add(New XElement("Musician", _
+         New XComment("This is our level for individual musicians.")))
+
+      Dim Player As XElement = Musicians_XML.<Musicians>.<Musician>.First
+      Player.Add(New XElement("Name", "Miles Davis"), New XElement("Genre", 1))
+
+      Musician.Add(New XElement("Musician", _
+         New XElement("Name", "Maynard Ferguson"), _
+         New XElement("Genre", 2)))
+
+      Musician.Add(New XElement("Musician", _
+         New XElement("Name", "Dizzy Gillespie"), _
+         New XElement("Genre", 3)))
+
+      Musician.Add(New XElement("Musician", _
+         New XElement("Name", "Bix Beiderbecke"), _
+         New XElement("Genre", 4)))
+
+      Musician.Add(New XElement("Musician", _
+         New XElement("Name", "Maurice Andre"), _
+         New XElement("Genre", 5)))
+
+      Dim SW As New System.IO.StringWriter()
+      Musicians_XML.Save(SW)
+      Console.WriteLine(SW)
+   End Sub
+End Class
